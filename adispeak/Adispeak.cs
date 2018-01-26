@@ -316,6 +316,7 @@ namespace adispeak
                 {
                     Tolk.Output(argument.User.Nick + " joins.");
                     SayTopic = true;
+                    SayTopicSetBy = true;
                                         }
                 else
                 {
