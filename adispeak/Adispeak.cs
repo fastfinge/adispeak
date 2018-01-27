@@ -139,17 +139,17 @@ namespace adispeak
 
         private void SpeakCommandHandler(RegisteredCommandArgs argument)
         {
-            Tolk.Speak(argument.Command.Remove(0,6));
+            Tolk.Speak(argument.Command.Remove(0, 6));
               }
 
         private void BrailleCommandHandler(RegisteredCommandArgs argument)
         {
-            Tolk.Braille(argument.Command.Remove(0, 6));
+            Tolk.Braille(argument.Command.Remove(0, 8));
         }
 
         private void SoutCommandHandler(RegisteredCommandArgs argument)
         {
-            Tolk.Output(argument.Command.Remove(0, 6));
+            Tolk.Output(argument.Command.Remove(0, 5));
         }
 
         private void SapionCommandHandler(RegisteredCommandArgs argument)
