@@ -285,6 +285,12 @@ namespace adispeak
                 Clipboard.SetText(_host.ActiveIWindow.TextView.GetLine(CurPos));
                 Tolk.Output("copied.");
             }
+
+            if (argument.KeyEventArgs.KeyCode == Keys.Control)
+            {
+                Tolk.Output(" ", true);
+            }
+
         }
 
         private void OnChannelCtcpMessage(ChannelCtcpMessageArgs argument)
