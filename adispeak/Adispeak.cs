@@ -30,8 +30,8 @@ namespace adispeak
         private int CurPos;
         private bool SayTopic;
         private bool SayTopicSetBy;
-
-        public void Initialize(IPluginHost host)
+        
+            public void Initialize(IPluginHost host)
         {
             _host = host;
 
@@ -134,7 +134,11 @@ namespace adispeak
             _host.OnUserMode += OnUserMode;
             _host.OnWindowFocusChanged += OnWindowFocusChanged;
             _host.OnRawServerEventReceived += OnRawServerEventReceived;
-
+            
+            if (_host.GetVariables["global_sapi"] == "true")
+            {
+                Tolk.PreferSAPI(true);
+            }
         }
 
         private void SpeakCommandHandler(RegisteredCommandArgs argument)
@@ -156,12 +160,14 @@ namespace adispeak
         {
             Tolk.PreferSAPI(true);
             Tolk.Output("SAPI on.");
+            _host.GetVariables["global_sapi"] = "true";
         }
 
         private void SapioffCommandHandler(RegisteredCommandArgs argument)
         {
             Tolk.PreferSAPI(false);
             Tolk.Output("SAPI off.");
+            _host.GetVariables["global_sapi"] = "false";
         }
 
         private void ScreenreaderIdentifierHandler(RegisteredIdentifierArgs argument)
@@ -288,7 +294,7 @@ namespace adispeak
 
             if (argument.KeyEventArgs.KeyCode == Keys.Control)
             {
-                Tolk.Output(" ", true);
+                Tolk.Speak(". ", true);
             }
 
         }
