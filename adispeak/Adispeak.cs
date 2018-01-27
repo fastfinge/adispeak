@@ -29,6 +29,7 @@ namespace adispeak
         private IPluginHost _host;
         private int CurPos;
         private bool SayTopic;
+        private bool SayTopicSetBy;
 
         public void Initialize(IPluginHost host)
         {
@@ -315,6 +316,7 @@ namespace adispeak
                 {
                     Tolk.Output(argument.User.Nick + " joins.");
                     SayTopic = true;
+                    SayTopicSetBy = true;
                                         }
                 else
                 {
@@ -327,6 +329,7 @@ namespace adispeak
                 {
                     Tolk.Output(argument.User.Nick + " joins " + argument.Channel.Name);
                     SayTopic = true;
+                    SayTopicSetBy = true;
                 }
                 else
                 {
@@ -1016,19 +1019,25 @@ else
 
         private void OnRawServerEventReceived(RawServerEventReceivedArgs argument)
         {
-            if (SayTopic == true)
+            if (SayTopic && argument.Numeric == "332")
             {
-                if (argument.Numeric == "332")
-                {
-                    string[] param = argument.Message.Split(' ');
-                    string topic = string.Join(" ", param, 2, param.Length - 2);
-                    Tolk.Output("The topic is: " + topic);
-                    SayTopic = false;
-                                    }
+                string[] param = argument.Message.Split(' ');
+                string topic = string.Join(" ", param, 2, param.Length - 2);
+                Tolk.Output("The topic is: " + topic + ".");
+                SayTopic = false;
+            }
+            if (SayTopicSetBy && argument.Numeric == "333")
+            {
+                string[] param = argument.Message.Split(' ');
+                string topicSetBy = param[2];
+                Int64 timeStamp = Convert.ToInt64(param[3]);
+                string topicTime = DateTimeOffset.FromUnixTimeSeconds(timeStamp).ToLocalTime().ToString("f");
+                Tolk.Output("Topic set by " + topicSetBy + " on " + topicTime + ".");
+                SayTopicSetBy = false;
             }
         }
-
-        public void Dispose()
+            
+            public void Dispose()
         {
             _host.UnHookIdentifier("screenreader");
             _host.UnHookIdentifier("speech");
