@@ -294,7 +294,7 @@ namespace adispeak
 
             if (argument.KeyEventArgs.KeyCode == Keys.F2)
             {
-                Tolk.Speak(". ", true);
+                Tolk.Silence();
             }
 
         }
