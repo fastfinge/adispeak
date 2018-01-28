@@ -35,6 +35,7 @@ namespace adispeak
         public void Initialize(IPluginHost host)
         {
             _host = host;
+            _tools = _host.Tools;
             
             Tolk.TrySAPI(true);
             Tolk.Load();
