@@ -27,6 +27,7 @@ namespace adispeak
         public string PluginVersion => "0.1";
         public string PluginEmail => "samuel@interfree.ca";
         private IPluginHost _host;
+        private ITools _tools;
         private int CurPos;
         private bool SayTopic;
         private bool SayTopicSetBy;
@@ -34,7 +35,7 @@ namespace adispeak
         public void Initialize(IPluginHost host)
         {
             _host = host;
-
+            
             Tolk.TrySAPI(true);
             Tolk.Load();
 
@@ -215,11 +216,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.User.Nick + " " + argument.Message);
+                Tolk.Output($"{argument.User.Nick} {_tools.Strip(argument.Message)}");
             }
             else
             {
-                Tolk.Output(argument.User.Nick + " on " + argument.Channel.Name + " " + argument.Message);
+                Tolk.Output($"{argument.User.Nick} on {argument.Channel.Name} {_tools.Strip(argument.Message)}");
             }
         }
 
@@ -239,7 +240,7 @@ namespace adispeak
                     CurPos = 0;
                 }
                 _host.ActiveIWindow.TextView.ScrollTo(CurPos);
-                Tolk.Output(_host.ActiveIWindow.TextView.GetLine(CurPos));
+                Tolk.Output(_tools.Strip(_host.ActiveIWindow.TextView.GetLine(CurPos)));
                 _host.ActiveIWindow.Editbox.Text = "";
             }
 
@@ -252,7 +253,7 @@ namespace adispeak
                     CurPos = _host.ActiveIWindow.TextView.Lines.Count - 1;
                 }
                 _host.ActiveIWindow.TextView.ScrollTo(CurPos);
-                Tolk.Output(_host.ActiveIWindow.TextView.GetLine(CurPos));
+                Tolk.Output(_tools.Strip(_host.ActiveIWindow.TextView.GetLine(CurPos)));
             }
 
             if (argument.KeyEventArgs.Alt && argument.KeyEventArgs.Shift && argument.KeyEventArgs.KeyCode == Keys.Home)
@@ -260,7 +261,7 @@ namespace adispeak
                 CurPos = 0;
                 _host.ActiveIWindow.TextView.ScrollHome();
                 Tolk.Output("Top.");
-                Tolk.Output(_host.ActiveIWindow.TextView.GetLine(CurPos));
+                Tolk.Output(_tools.Strip(_host.ActiveIWindow.TextView.GetLine(CurPos)));
             }
 
             if (argument.KeyEventArgs.Alt && argument.KeyEventArgs.Shift && argument.KeyEventArgs.KeyCode == Keys.End)
@@ -268,7 +269,7 @@ namespace adispeak
                 CurPos = _host.ActiveIWindow.TextView.Lines.Count - 1;
                 _host.ActiveIWindow.TextView.ScrollEnd();
                 Tolk.Output("Bottom.");
-                Tolk.Output(_host.ActiveIWindow.TextView.GetLine(CurPos));
+                Tolk.Output(_tools.Strip(_host.ActiveIWindow.TextView.GetLine(CurPos)));
             }
 
             if (argument.KeyEventArgs.KeyCode == Keys.PageUp || argument.KeyEventArgs.KeyCode == Keys.PageDown)
@@ -278,17 +279,17 @@ namespace adispeak
                 {
                     CurPos = _host.ActiveIWindow.TextView.Lines.Count - 1;
                 }
-                Tolk.Output(_host.ActiveIWindow.TextView.GetLine(CurPos));
+                Tolk.Output(_tools.Strip(_host.ActiveIWindow.TextView.GetLine(CurPos)));
             }
 
             if (argument.KeyEventArgs.Control && argument.KeyEventArgs.Shift && argument.KeyEventArgs.KeyCode == Keys.Space)
             {
-                Tolk.Output(_host.ActiveIWindow.TextView.GetLine(CurPos));
+                Tolk.Output(_tools.Strip(_host.ActiveIWindow.TextView.GetLine(CurPos)));
             }
 
             if (argument.KeyEventArgs.Control && argument.KeyEventArgs.Shift && argument.KeyEventArgs.KeyCode == Keys.C)
             {
-                Clipboard.SetText(_host.ActiveIWindow.TextView.GetLine(CurPos));
+                Clipboard.SetText(_tools.Strip(_host.ActiveIWindow.TextView.GetLine(CurPos)));
                 Tolk.Output("copied.");
             }
 
