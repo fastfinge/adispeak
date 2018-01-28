@@ -30,8 +30,8 @@ namespace adispeak
         private int CurPos;
         private bool SayTopic;
         private bool SayTopicSetBy;
-        
-            public void Initialize(IPluginHost host)
+
+        public void Initialize(IPluginHost host)
         {
             _host = host;
 
@@ -93,7 +93,7 @@ namespace adispeak
             _host.OnChannelModeUserOpped += OnChannelModeUserOpped;
             _host.OnChannelModeUserOwnered += OnChannelModeUserOwnered;
             _host.OnChannelModeUserVoiced += OnChannelModeUserVoiced;
-           _host.OnChannelNormalMessage += OnChannelNormalMessage;
+            _host.OnChannelNormalMessage += OnChannelNormalMessage;
             _host.OnChannelNoticeMessage += OnChannelNoticeMessage;
             _host.OnChannelPart += OnChannelPart;
             _host.OnChannelServerModeListBan += OnChannelServerModeListBan;
@@ -134,8 +134,8 @@ namespace adispeak
             _host.OnUserMode += OnUserMode;
             _host.OnWindowFocusChanged += OnWindowFocusChanged;
             _host.OnRawServerEventReceived += OnRawServerEventReceived;
-            
-            if (_host.GetVariables["global_sapi"] == "true")
+
+            if (_host.GetVariables["%global_sapi"] == "true")
             {
                 Tolk.PreferSAPI(true);
             }
@@ -144,7 +144,7 @@ namespace adispeak
         private void SpeakCommandHandler(RegisteredCommandArgs argument)
         {
             Tolk.Speak(argument.Command.Remove(0, 6));
-              }
+        }
 
         private void BrailleCommandHandler(RegisteredCommandArgs argument)
         {
@@ -160,14 +160,14 @@ namespace adispeak
         {
             Tolk.PreferSAPI(true);
             Tolk.Output("SAPI on.");
-            _host.GetVariables["global_sapi"] = "true";
+            _host.ActiveIWindow.ExecuteCommand(".set %global_sapi true");
         }
 
         private void SapioffCommandHandler(RegisteredCommandArgs argument)
         {
             Tolk.PreferSAPI(false);
             Tolk.Output("SAPI off.");
-            _host.GetVariables["global_sapi"] = "false";
+            _host.ActiveIWindow.ExecuteCommand(".set %global_sapi false");
         }
 
         private void ScreenreaderIdentifierHandler(RegisteredIdentifierArgs argument)
@@ -217,7 +217,7 @@ namespace adispeak
             {
                 Tolk.Output(argument.User.Nick + " " + argument.Message);
             }
-                    else
+            else
             {
                 Tolk.Output(argument.User.Nick + " on " + argument.Channel.Name + " " + argument.Message);
             }
@@ -237,7 +237,7 @@ namespace adispeak
                 {
                     Tolk.Output("Top.");
                     CurPos = 0;
-}
+                }
                 _host.ActiveIWindow.TextView.ScrollTo(CurPos);
                 Tolk.Output(_host.ActiveIWindow.TextView.GetLine(CurPos));
                 _host.ActiveIWindow.Editbox.Text = "";
@@ -292,9 +292,9 @@ namespace adispeak
                 Tolk.Output("copied.");
             }
 
-            if (argument.KeyEventArgs.KeyCode == Keys.Control)
+            if (argument.KeyEventArgs.KeyCode == Keys.F2)
             {
-                Tolk.Speak(". ", true);
+                Tolk.Silence();
             }
 
         }
@@ -309,7 +309,7 @@ namespace adispeak
             {
                 Tolk.Output("ctcp from " + argument.User.Nick + " to " + argument.Channel.Name + ": " + argument.Message);
             }
-                    }
+        }
 
         private void OnChannelCtcpReplyMessage(ChannelCtcpReplyMessageArgs argument)
         {
@@ -344,13 +344,13 @@ namespace adispeak
                     Tolk.Output(argument.User.Nick + " joins.");
                     SayTopic = true;
                     SayTopicSetBy = true;
-                                        }
+                }
                 else
                 {
                     Tolk.Output(argument.User.Nick + " joins");
                 }
             }
-                else
+            else
             {
                 if (argument.Channel.Server.Nick == argument.User.Nick)
                 {
@@ -376,539 +376,539 @@ namespace adispeak
                 Tolk.Output(argument.KickedUser.Nick + " is kicked from " + argument.Channel.Name + " by " + argument.ByUser.Nick + ": " + argument.KickReason);
             }
         }
-                
+
         private void OnChannelModeListBan(ChannelModeListBanArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " bans " + argument.BanMask);
-}
-else 
-{
-            Tolk.Output(argument.ByUser.Nick + " bans " + argument.BanMask + " from " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " bans " + argument.BanMask);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " bans " + argument.BanMask + " from " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeListBanExempt(ChannelModeListBanExemptArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " ban exempts " + argument.BanMask);
-}
-else
-{
-            Tolk.Output(argument.ByUser.Nick + " ban exempts " + argument.BanMask + " from " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " ban exempts " + argument.BanMask);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " ban exempts " + argument.BanMask + " from " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeListBanUnexempt(ChannelModeListBanUnexemptArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " ban unexempts " + argument.BanMask);
-}
-else
-{
-            Tolk.Output(argument.ByUser.Nick + " ban unexempts " + argument.BanMask + " from " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " ban unexempts " + argument.BanMask);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " ban unexempts " + argument.BanMask + " from " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeListInviteExempt(ChannelModeListInviteExemptArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " invite exempts " + argument.BanMask);
-}
-else 
-{
-            Tolk.Output(argument.ByUser.Nick + " invite exempts " + argument.BanMask + " from " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " invite exempts " + argument.BanMask);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " invite exempts " + argument.BanMask + " from " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeListInviteUnexempt(ChannelModeListInviteUnexemptArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " invite unexempts " + argument.BanMask);
-}
-else 
-{
-            Tolk.Output(argument.ByUser.Nick + " invite unexempts " + argument.BanMask + " from " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " invite unexempts " + argument.BanMask);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " invite unexempts " + argument.BanMask + " from " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeListQuiet(ChannelModeListQuietArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " quiet bans " + argument.BanMask);
-}
-else 
-{
-            Tolk.Output(argument.ByUser.Nick + " quiet bans " + argument.BanMask + " from " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " quiet bans " + argument.BanMask);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " quiet bans " + argument.BanMask + " from " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeListUnban(ChannelModeListUnbanArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " unbans " + argument.BanMask);
-}
-else 
-{
-            Tolk.Output(argument.ByUser.Nick + " unbans " + argument.BanMask + " from " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " unbans " + argument.BanMask);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " unbans " + argument.BanMask + " from " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeListUnquiet(ChannelModeListUnquietArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " unquiet bans " + argument.BanMask);
-}
-else
-{
-            Tolk.Output(argument.ByUser.Nick + " unquiet bans " + argument.BanMask + " from " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " unquiet bans " + argument.BanMask);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " unquiet bans " + argument.BanMask + " from " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeUserAdmined(ChannelModeUserAdminedArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " admins " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output(argument.ByUser.Nick + " admins " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " admins " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " admins " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeUserDeadmined(ChannelModeUserDeadminedArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " de-admins " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output(argument.ByUser.Nick + " de-admins " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " de-admins " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " de-admins " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeUserDehalfOpped(ChannelModeUserDehalfOppedArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " de-halfOpps " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output(argument.ByUser.Nick + " de-halfOpps " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " de-halfOpps " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " de-halfOpps " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeUserDeopped(ChannelModeUserDeoppedArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " de-opps " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output(argument.ByUser.Nick + " de-opps " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " de-opps " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " de-opps " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeUserDeownered(ChannelModeUserDeowneredArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " de-owners " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output(argument.ByUser.Nick + " de-owners " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " de-owners " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " de-owners " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeUserDevoiced(ChannelModeUserDevoicedArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " de-voices " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output(argument.ByUser.Nick + " de-voices " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " de-voices " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " de-voices " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeUserHalfOpped(ChannelModeUserHalfOppedArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " halfOpps " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output(argument.ByUser.Nick + " halfOpps " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " halfOpps " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " halfOpps " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeUserOpped(ChannelModeUserOppedArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " opps " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output(argument.ByUser.Nick + " opps " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " opps " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " opps " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeUserOwnered(ChannelModeUserOwneredArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " owners " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output(argument.ByUser.Nick + " owners " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " owners " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " owners " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelModeUserVoiced(ChannelModeUserVoicedArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.ByUser.Nick + " voices " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output(argument.ByUser.Nick + " voices " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.ByUser.Nick + " voices " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output(argument.ByUser.Nick + " voices " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelNormalMessage(ChannelNormalMessageArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-          Tolk.Output(argument.User.Nick + " says " + argument.Message);
-}
-else
-{
-          Tolk.Output(argument.User.Nick + " on " + argument.Channel.Name + " says " + argument.Message);
-                       }
-}
+            {
+                Tolk.Output(argument.User.Nick + " says " + argument.Message);
+            }
+            else
+            {
+                Tolk.Output(argument.User.Nick + " on " + argument.Channel.Name + " says " + argument.Message);
+            }
+        }
 
         private void OnChannelNoticeMessage(ChannelNoticeMessageArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.User.Nick + " notice: " + argument.Message);
-}
-else
-{
-            Tolk.Output(argument.User.Nick + " on " + argument.Channel.Name + " notice: " + argument.Message);
+            {
+                Tolk.Output(argument.User.Nick + " notice: " + argument.Message);
+            }
+            else
+            {
+                Tolk.Output(argument.User.Nick + " on " + argument.Channel.Name + " notice: " + argument.Message);
+            }
         }
-}
 
         private void OnChannelPart(ChannelPartArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.User.Nick + " parts: " + argument.PartMessage);
-}
-else
-{
-            Tolk.Output(argument.User.Nick + " parts " + argument.Channel.Name + ": " + argument.PartMessage);
+            {
+                Tolk.Output(argument.User.Nick + " parts: " + argument.PartMessage);
+            }
+            else
+            {
+                Tolk.Output(argument.User.Nick + " parts " + argument.Channel.Name + ": " + argument.PartMessage);
+            }
         }
-}
 
         private void OnChannelServerModeListBan(ChannelServerModeListBanArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server bans " + argument.BanMask);
-}
-else
-{
-            Tolk.Output("server bans " + argument.BanMask + " from " + argument.Channel.Name);
+            {
+                Tolk.Output("server bans " + argument.BanMask);
+            }
+            else
+            {
+                Tolk.Output("server bans " + argument.BanMask + " from " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeListBanExempt(ChannelServerModeListBanExemptArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server ban exempts " + argument.BanMask);
-}
-else
-{
-            Tolk.Output("server ban exempts " + argument.BanMask + " from " + argument.Channel.Name);
+            {
+                Tolk.Output("server ban exempts " + argument.BanMask);
+            }
+            else
+            {
+                Tolk.Output("server ban exempts " + argument.BanMask + " from " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeListBanUnexempt(ChannelServerModeListBanUnexemptArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server ban unexempts " + argument.BanMask);
-}
-else
-{
-            Tolk.Output("server ban unexempts " + argument.BanMask + " from " + argument.Channel.Name);
+            {
+                Tolk.Output("server ban unexempts " + argument.BanMask);
+            }
+            else
+            {
+                Tolk.Output("server ban unexempts " + argument.BanMask + " from " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeListInviteExempt(ChannelServerModeListInviteExemptArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server invite exempts " + argument.BanMask);
-}
-else
-{
-            Tolk.Output("server invite exempts " + argument.BanMask + " from " + argument.Channel.Name);
+            {
+                Tolk.Output("server invite exempts " + argument.BanMask);
+            }
+            else
+            {
+                Tolk.Output("server invite exempts " + argument.BanMask + " from " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeListInviteUnexempt(ChannelServerModeListInviteUnexemptArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server invite unexempts " + argument.BanMask);
-}
-else
-{
-            Tolk.Output("server invite unexempts " + argument.BanMask + " from " + argument.Channel.Name);
+            {
+                Tolk.Output("server invite unexempts " + argument.BanMask);
+            }
+            else
+            {
+                Tolk.Output("server invite unexempts " + argument.BanMask + " from " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeListQuiet(ChannelServerModeListQuietArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server quiet bans " + argument.BanMask);
-}
-else
-{
-            Tolk.Output("server quiet bans " + argument.BanMask + " from " + argument.Channel.Name);
+            {
+                Tolk.Output("server quiet bans " + argument.BanMask);
+            }
+            else
+            {
+                Tolk.Output("server quiet bans " + argument.BanMask + " from " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeListUnban(ChannelServerModeListUnbanArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server unbans " + argument.BanMask);
-}
-else
-{
-            Tolk.Output("server unbans " + argument.BanMask + " from " + argument.Channel.Name);
+            {
+                Tolk.Output("server unbans " + argument.BanMask);
+            }
+            else
+            {
+                Tolk.Output("server unbans " + argument.BanMask + " from " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeListUnquiet(ChannelServerModeListUnquietArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server quiet unbans " + argument.BanMask);
-}
-else
-{
-            Tolk.Output("server quiet unbans " + argument.BanMask + " from " + argument.Channel.Name);
+            {
+                Tolk.Output("server quiet unbans " + argument.BanMask);
+            }
+            else
+            {
+                Tolk.Output("server quiet unbans " + argument.BanMask + " from " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeUserAdmined(ChannelServerModeUserAdminedArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server admins " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output("server admins " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output("server admins " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output("server admins " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeUserDeadmined(ChannelServerModeUserDeadminedArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server de-admins " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output("server de-admins " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output("server de-admins " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output("server de-admins " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeUserDehalfOpped(ChannelServerModeUserDehalfOppedArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server de-halfOpps " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output("server de-halfOpps " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output("server de-halfOpps " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output("server de-halfOpps " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeUserDeopped(ChannelServerModeUserDeoppedArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server de-opps " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output("server de-opps " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output("server de-opps " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output("server de-opps " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeUserDeownered(ChannelServerModeUserDeowneredArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server de-owners " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output("server de-owners " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output("server de-owners " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output("server de-owners " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeUserDevoiced(ChannelServerModeUserDevoicedArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server de-voices " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output("server de-voices " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output("server de-voices " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output("server de-voices " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeUserHalfOpped(ChannelServerModeUserHalfOppedArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server halfOpps " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output("server halfOpps " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output("server halfOpps " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output("server halfOpps " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeUserOpped(ChannelServerModeUserOppedArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server opps " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output("server opps " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output("server opps " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output("server opps " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeUserOwnered(ChannelServerModeUserOwneredArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server owners " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output("server owners " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output("server owners " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output("server owners " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelServerModeUserVoiced(ChannelServerModeUserVoicedArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server voices " + argument.User.Nick);
-}
-else
-{
-            Tolk.Output("server voices " + argument.User.Nick + " on " + argument.Channel.Name);
+            {
+                Tolk.Output("server voices " + argument.User.Nick);
+            }
+            else
+            {
+                Tolk.Output("server voices " + argument.User.Nick + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnChannelTopic(ChannelTopicArgs argument)
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output(argument.User.Nick + " sets topic " + argument.NewTopic);
-}
-else
-{
-            Tolk.Output(argument.User.Nick + " sets topic " + argument.NewTopic + " on " + argument.Channel.Name);
+            {
+                Tolk.Output(argument.User.Nick + " sets topic " + argument.NewTopic);
+            }
+            else
+            {
+                Tolk.Output(argument.User.Nick + " sets topic " + argument.NewTopic + " on " + argument.Channel.Name);
+            }
         }
-}
 
         private void OnConnect(ConnectArgs argument)
         {
             if (argument.Server.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("Connected");
-}
-else
-{
-            Tolk.Output("Connected to " + argument.Server.Name);
+            {
+                Tolk.Output("Connected");
+            }
+            else
+            {
+                Tolk.Output("Connected to " + argument.Server.Name);
+            }
         }
-}
 
         private void OnConnectFailure(ConnectFailureArgs argument)
         {
             if (argument.Server.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("Failed to connect:" + argument.Error);
-}
-else
-{
-            Tolk.Output("Failed to connect to " + argument.Server.Name + ": " + argument.Error);
+            {
+                Tolk.Output("Failed to connect:" + argument.Error);
+            }
+            else
+            {
+                Tolk.Output("Failed to connect to " + argument.Server.Name + ": " + argument.Error);
+            }
         }
-}
 
         private void OnConnectionLogonSuccess(ConnectionLogonSuccessArgs argument)
         {
             if (argument.Server.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("Logged on");
-}
-else
-{
-            Tolk.Output("Logged on to " + argument.Server.Name);
+            {
+                Tolk.Output("Logged on");
+            }
+            else
+            {
+                Tolk.Output("Logged on to " + argument.Server.Name);
+            }
         }
-}
 
         private void OnDisconnect(DisconnectArgs argument)
         {
             if (argument.Server.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("disconnected");
-}
-else
-{
-            Tolk.Output("disconnected from " + argument.Server.Name);
+            {
+                Tolk.Output("disconnected");
+            }
+            else
+            {
+                Tolk.Output("disconnected from " + argument.Server.Name);
+            }
         }
-}
 
         private void OnMessageSent(MessageSentArgs argument)
         {
             if (argument.Target == _host.ActiveIWindow.Name)
-{
+            {
                 if (argument.Command.StartsWith("/me"))
                 {
                     Tolk.Output(argument.Server.Nick + " " + argument.Message);
@@ -918,8 +918,8 @@ else
                     Tolk.Output(argument.Server.Nick + " says " + argument.Message);
                 }
             }
-else
-{
+            else
+            {
                 if (argument.Command.StartsWith("/me"))
                 {
                     Tolk.Output(argument.Server.Nick + " on " + argument.Target + " " + argument.Message);
@@ -929,7 +929,7 @@ else
                     Tolk.Output(argument.Server.Nick + " on " + argument.Target + " says " + argument.Message);
                 }
             }
-}
+        }
 
         private void OnNick(NickArgs argument)
         {
@@ -939,30 +939,30 @@ else
         private void OnNotifyUserOffline(NotifyUserOfflineArgs argument)
         {
             if (argument.Server.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("notify: " + argument.User.Nick + " offline");
-}
-else
-{
-            Tolk.Output("notify: " + argument.User.Nick + " offline on " + argument.Server.Name);
+            {
+                Tolk.Output("notify: " + argument.User.Nick + " offline");
+            }
+            else
+            {
+                Tolk.Output("notify: " + argument.User.Nick + " offline on " + argument.Server.Name);
+            }
         }
-}
 
         private void OnNotifyUserOnline(NotifyUserOnlineArgs argument)
         {
             if (argument.Server.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("notify: " + argument.User.Nick + " online at " + argument.SignedOnTime.ToLongDateString());
-}
-else
-{
-            Tolk.Output("notify: " + argument.User.Nick + " online on " + argument.Server.Name + " at " + argument.SignedOnTime.ToLongDateString());
+            {
+                Tolk.Output("notify: " + argument.User.Nick + " online at " + argument.SignedOnTime.ToLongDateString());
+            }
+            else
+            {
+                Tolk.Output("notify: " + argument.User.Nick + " online on " + argument.Server.Name + " at " + argument.SignedOnTime.ToLongDateString());
+            }
         }
-}
 
         private void OnPrivateActionMessage(PrivateActionMessageArgs argument)
         {
-            Tolk.Output(argument.User.Nick + "@" + argument.Server.Name + "in private message " + argument.Message);           
+            Tolk.Output(argument.User.Nick + "@" + argument.Server.Name + "in private message " + argument.Message);
         }
 
         private void OnPrivateCtcpMessage(PrivateCtcpMessageArgs argument)
@@ -987,32 +987,39 @@ else
 
         private void OnQuit(QuitArgs argument)
         {
-            Tolk.Output(argument.User.Nick + " quit: " + argument.QuitMessage);
+            if (argument.Server.Network == _host.ActiveIWindow.Server.Network)
+            {
+                Tolk.Output($"{argument.User.Nick} quit: {argument.QuitMessage}");
+            }
+            else
+            {
+                Tolk.Output($"{argument.User.Nick} on {argument.Server.Network} quit: {argument.QuitMessage}");
+            }
         }
 
         private void OnServerErrorMessage(ServerErrorMessageArgs argument)
         {
             if (argument.Server.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server error: " + argument.Message);
-}
-else
-{
-            Tolk.Output("server error from " + argument.Server.Name + ": " + argument.Message);
+            {
+                Tolk.Output("server error: " + argument.Message);
+            }
+            else
+            {
+                Tolk.Output("server error from " + argument.Server.Name + ": " + argument.Message);
+            }
         }
-}
 
         private void OnServerNoticeMessage(ServerNoticeMessageArgs argument)
         {
             if (argument.Server.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("server notice: " + argument.Message);
-}
-else
-{
-            Tolk.Output("server notice from " + argument.Server.Name + ": " + argument.Message);
+            {
+                Tolk.Output("server notice: " + argument.Message);
+            }
+            else
+            {
+                Tolk.Output("server notice from " + argument.Server.Name + ": " + argument.Message);
+            }
         }
-}
 
         private void OnUserInvitedToChannel(UserInvitedToChannelArgs argument)
         {
@@ -1022,14 +1029,14 @@ else
         private void OnUserMode(UserModeArgs argument)
         {
             if (argument.Server.Name == _host.ActiveIWindow.Name)
-{
-            Tolk.Output("you get " + argument.Mode);
-}
-else
-{
-            Tolk.Output("you get " + argument.Mode + " on " + argument.Server.Name);
+            {
+                Tolk.Output("you get " + argument.Mode);
+            }
+            else
+            {
+                Tolk.Output("you get " + argument.Mode + " on " + argument.Server.Name);
+            }
         }
-}
 
         private void OnWindowFocusChanged(WindowFocusArgs argument)
         {
@@ -1063,8 +1070,8 @@ else
                 SayTopicSetBy = false;
             }
         }
-            
-            public void Dispose()
+
+        public void Dispose()
         {
             _host.UnHookIdentifier("screenreader");
             _host.UnHookIdentifier("speech");
