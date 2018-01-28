@@ -305,11 +305,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("ctcp from " + argument.User.Nick + ": " + argument.Message);
+                Tolk.Output($"ctcp from {argument.User.Nick}: {_tools.Strip(argument.Message)}");
             }
             else
             {
-                Tolk.Output("ctcp from " + argument.User.Nick + " to " + argument.Channel.Name + ": " + argument.Message);
+                Tolk.Output($"ctcp from {argument.User.Nick} to {argument.Channel.Name}: {_tools.Strip(argument.Message)}");
             }
         }
 
@@ -317,11 +317,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("ctcp reply from " + argument.User.Nick + ": " + argument.Message);
+                Tolk.Output($"ctcp reply from {argument.User.Nick}: {_tools.Strip(argument.Message)}");
             }
             else
             {
-                Tolk.Output("ctcp reply from " + argument.User.Nick + " to " + argument.Channel.Name + ": " + argument.Message);
+                Tolk.Output($"ctcp reply from {argument.User.Nick} to {argument.Channel.Name}: {_tools.Strip(argument.Message)}");
             }
         }
 
@@ -329,11 +329,11 @@ namespace adispeak
         {
             if (argument.ChannelName == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.User.Nick + " invites you to join this channel");
+                Tolk.Output($"{argument.User.Nick} invites you to join this channel");
             }
             else
             {
-                Tolk.Output(argument.User.Nick + " invites you to join " + argument.ChannelName);
+                Tolk.Output($"{argument.User.Nick} invites you to join {argument.ChannelName}");
             }
         }
 
@@ -343,26 +343,26 @@ namespace adispeak
             {
                 if (argument.Channel.Server.Nick == argument.User.Nick)
                 {
-                    Tolk.Output(argument.User.Nick + " joins.");
+                    Tolk.Output($"{argument.User.Nick} joins.");
                     SayTopic = true;
                     SayTopicSetBy = true;
                 }
                 else
                 {
-                    Tolk.Output(argument.User.Nick + " joins");
+                    Tolk.Output($"{argument.User.Nick} joins.");
                 }
             }
             else
             {
                 if (argument.Channel.Server.Nick == argument.User.Nick)
                 {
-                    Tolk.Output(argument.User.Nick + " joins " + argument.Channel.Name);
+                    Tolk.Output($"{argument.User.Nick} joins {argument.Channel.Name}");
                     SayTopic = true;
                     SayTopicSetBy = true;
                 }
                 else
                 {
-                    Tolk.Output(argument.User.Nick + " joins " + argument.Channel.Name);
+                    Tolk.Output($"{argument.User.Nick} joins {argument.Channel.Name}");
                 }
             }
         }
@@ -371,11 +371,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.KickedUser.Nick + " is kicked by " + argument.ByUser.Nick + ": " + argument.KickReason);
+                Tolk.Output($"{argument.KickedUser.Nick} is kicked by {argument.ByUser.Nick}: {_tools.Strip(argument.KickReason)}");
             }
             else
             {
-                Tolk.Output(argument.KickedUser.Nick + " is kicked from " + argument.Channel.Name + " by " + argument.ByUser.Nick + ": " + argument.KickReason);
+                Tolk.Output($"{argument.KickedUser.Nick} is kicked from {argument.Channel.Name} by {argument.ByUser.Nick}: {_tools.Strip(argument.KickReason)}");
             }
         }
 
@@ -383,11 +383,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " bans " + argument.BanMask);
+                Tolk.Output($"{argument.ByUser.Nick} bans {argument.BanMask}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " bans " + argument.BanMask + " from " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} bans {argument.BanMask} from {argument.Channel.Name}");
             }
         }
 
@@ -395,11 +395,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " ban exempts " + argument.BanMask);
+                Tolk.Output($"{argument.ByUser.Nick} ban exempts {argument.BanMask}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " ban exempts " + argument.BanMask + " from " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} ban exempts {argument.BanMask} from {argument.Channel.Name}");
             }
         }
 
@@ -407,11 +407,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " ban unexempts " + argument.BanMask);
+                Tolk.Output($"{argument.ByUser.Nick} ban unexempts {argument.BanMask}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " ban unexempts " + argument.BanMask + " from " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} ban unexempts {argument.BanMask} from {argument.Channel.Name}");
             }
         }
 
@@ -419,11 +419,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " invite exempts " + argument.BanMask);
+                Tolk.Output($"{argument.ByUser.Nick} invite exempts {argument.BanMask}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " invite exempts " + argument.BanMask + " from " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} invite exempts {argument.BanMask} from {argument.Channel.Name}");
             }
         }
 
@@ -431,11 +431,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " invite unexempts " + argument.BanMask);
+                Tolk.Output($"{argument.ByUser.Nick} invite unexempts {argument.BanMask}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " invite unexempts " + argument.BanMask + " from " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} invite unexempts {argument.BanMask} from {argument.Channel.Name}");
             }
         }
 
@@ -443,11 +443,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " quiet bans " + argument.BanMask);
+                Tolk.Output($"{argument.ByUser.Nick} quiet bans {argument.BanMask}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " quiet bans " + argument.BanMask + " from " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} quiet bans {argument.BanMask} from {argument.Channel.Name}");
             }
         }
 
@@ -455,11 +455,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " unbans " + argument.BanMask);
+                Tolk.Output($"{argument.ByUser.Nick} unbans {argument.BanMask}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " unbans " + argument.BanMask + " from " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} unbans {argument.BanMask} from {argument.Channel.Name}");
             }
         }
 
@@ -467,11 +467,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " unquiet bans " + argument.BanMask);
+                Tolk.Output($"{argument.ByUser.Nick} unquiet bans {argument.BanMask}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " unquiet bans " + argument.BanMask + " from " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} unquiet bans {argument.BanMask} from {argument.Channel.Name}");
             }
         }
 
@@ -479,11 +479,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " admins " + argument.User.Nick);
+                Tolk.Output($"{argument.ByUser.Nick} admins {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " admins " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} admins {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -491,11 +491,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " de-admins " + argument.User.Nick);
+                Tolk.Output($"{argument.ByUser.Nick} de-admins {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " de-admins " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} de-admins {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -503,11 +503,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " de-halfOpps " + argument.User.Nick);
+                Tolk.Output($"{argument.ByUser.Nick} de-halfOpps {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " de-halfOpps " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} de-halfOpps {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -515,11 +515,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " de-opps " + argument.User.Nick);
+                Tolk.Output($"{argument.ByUser.Nick} de-opps {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " de-opps " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} de-opps {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -527,11 +527,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " de-owners " + argument.User.Nick);
+                Tolk.Output($"{argument.ByUser.Nick} de-owners {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " de-owners " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} de-owners {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -539,11 +539,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " de-voices " + argument.User.Nick);
+                Tolk.Output($"{argument.ByUser.Nick} de-voices {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " de-voices " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} de-voices {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -551,11 +551,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " halfOpps " + argument.User.Nick);
+                Tolk.Output($"{argument.ByUser.Nick} halfOpps {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " halfOpps " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} halfOpps {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -563,11 +563,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " opps " + argument.User.Nick);
+                Tolk.Output($"{argument.ByUser.Nick} opps {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " opps " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} opps {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -575,11 +575,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " owners " + argument.User.Nick);
+                Tolk.Output($"{argument.ByUser.Nick} owners {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " owners " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} owners {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -587,11 +587,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.ByUser.Nick + " voices " + argument.User.Nick);
+                Tolk.Output($"{argument.ByUser.Nick} voices {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output(argument.ByUser.Nick + " voices " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"{argument.ByUser.Nick} voices {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -599,11 +599,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.User.Nick + " says " + argument.Message);
+                Tolk.Output($"{argument.User.Nick} says {_tools.Strip(argument.Message)}");
             }
             else
             {
-                Tolk.Output(argument.User.Nick + " on " + argument.Channel.Name + " says " + argument.Message);
+                Tolk.Output($"{argument.User.Nick} on {argument.Channel.Name} says {_tools.Strip(argument.Message)}");
             }
         }
 
@@ -611,11 +611,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.User.Nick + " notice: " + argument.Message);
+                Tolk.Output($"{argument.User.Nick} notice: {_tools.Strip(argument.Message)}");
             }
             else
             {
-                Tolk.Output(argument.User.Nick + " on " + argument.Channel.Name + " notice: " + argument.Message);
+                Tolk.Output($"{argument.User.Nick} on {argument.Channel.Name} notice: {_tools.Strip(argument.Message)}");
             }
         }
 
@@ -623,11 +623,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.User.Nick + " parts: " + argument.PartMessage);
+                Tolk.Output($"{argument.User.Nick} parts: {_tools.Strip(argument.PartMessage)}");
             }
             else
             {
-                Tolk.Output(argument.User.Nick + " parts " + argument.Channel.Name + ": " + argument.PartMessage);
+                Tolk.Output($"{argument.User.Nick} parts {argument.Channel.Name}: {_tools.Strip(argument.PartMessage)}");
             }
         }
 
@@ -635,11 +635,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server bans " + argument.BanMask);
+                Tolk.Output($"server bans {argument.BanMask}");
             }
             else
             {
-                Tolk.Output("server bans " + argument.BanMask + " from " + argument.Channel.Name);
+                Tolk.Output($"server bans {argument.BanMask} from {argument.Channel.Name}");
             }
         }
 
@@ -647,11 +647,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server ban exempts " + argument.BanMask);
+                Tolk.Output($"server ban exempts {argument.BanMask}");
             }
             else
             {
-                Tolk.Output("server ban exempts " + argument.BanMask + " from " + argument.Channel.Name);
+                Tolk.Output($"server ban exempts {argument.BanMask} from {argument.Channel.Name}");
             }
         }
 
@@ -659,11 +659,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server ban unexempts " + argument.BanMask);
+                Tolk.Output($"server ban unexempts {argument.BanMask}");
             }
             else
             {
-                Tolk.Output("server ban unexempts " + argument.BanMask + " from " + argument.Channel.Name);
+                Tolk.Output($"server ban unexempts {argument.BanMask} from {argument.Channel.Name}");
             }
         }
 
@@ -671,11 +671,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server invite exempts " + argument.BanMask);
+                Tolk.Output($"server invite exempts {argument.BanMask}");
             }
             else
             {
-                Tolk.Output("server invite exempts " + argument.BanMask + " from " + argument.Channel.Name);
+                Tolk.Output($"server invite exempts {argument.BanMask} from {argument.Channel.Name}");
             }
         }
 
@@ -683,11 +683,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server invite unexempts " + argument.BanMask);
+                Tolk.Output($"server invite unexempts {argument.BanMask}");
             }
             else
             {
-                Tolk.Output("server invite unexempts " + argument.BanMask + " from " + argument.Channel.Name);
+                Tolk.Output($"server invite unexempts {argument.BanMask} from {argument.Channel.Name}");
             }
         }
 
@@ -695,11 +695,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server quiet bans " + argument.BanMask);
+                Tolk.Output($"server quiet bans {argument.BanMask}");
             }
             else
             {
-                Tolk.Output("server quiet bans " + argument.BanMask + " from " + argument.Channel.Name);
+                Tolk.Output($"server quiet bans {argument.BanMask} from {argument.Channel.Name}");
             }
         }
 
@@ -707,11 +707,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server unbans " + argument.BanMask);
+                Tolk.Output($"server unbans {argument.BanMask}");
             }
             else
             {
-                Tolk.Output("server unbans " + argument.BanMask + " from " + argument.Channel.Name);
+                Tolk.Output($"server unbans {argument.BanMask} from {argument.Channel.Name}");
             }
         }
 
@@ -719,11 +719,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server quiet unbans " + argument.BanMask);
+                Tolk.Output($"server quiet unbans {argument.BanMask}");
             }
             else
             {
-                Tolk.Output("server quiet unbans " + argument.BanMask + " from " + argument.Channel.Name);
+                Tolk.Output($"server quiet unbans {argument.BanMask} from {argument.Channel.Name}");
             }
         }
 
@@ -731,11 +731,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server admins " + argument.User.Nick);
+                Tolk.Output($"server admins {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output("server admins " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"server admins {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -743,11 +743,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server de-admins " + argument.User.Nick);
+                Tolk.Output($"server de-admins {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output("server de-admins " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"server de-admins {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -755,11 +755,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server de-halfOpps " + argument.User.Nick);
+                Tolk.Output($"server de-halfOpps {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output("server de-halfOpps " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"server de-halfOpps {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -767,11 +767,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server de-opps " + argument.User.Nick);
+                Tolk.Output($"server de-opps {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output("server de-opps " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"server de-opps {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -779,11 +779,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server de-owners " + argument.User.Nick);
+                Tolk.Output($"server de-owners {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output("server de-owners " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"server de-owners {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -791,11 +791,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server de-voices " + argument.User.Nick);
+                Tolk.Output($"server de-voices {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output("server de-voices " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"server de-voices {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -803,11 +803,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server halfOpps " + argument.User.Nick);
+                Tolk.Output($"server halfOpps {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output("server halfOpps " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"server halfOpps {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -815,11 +815,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server opps " + argument.User.Nick);
+                Tolk.Output($"server opps {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output("server opps " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"server opps {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -827,11 +827,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server owners " + argument.User.Nick);
+                Tolk.Output($"server owners {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output("server owners " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"server owners {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -839,11 +839,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server voices " + argument.User.Nick);
+                Tolk.Output($"server voices {argument.User.Nick}");
             }
             else
             {
-                Tolk.Output("server voices " + argument.User.Nick + " on " + argument.Channel.Name);
+                Tolk.Output($"server voices {argument.User.Nick} on {argument.Channel.Name}");
             }
         }
 
@@ -851,11 +851,11 @@ namespace adispeak
         {
             if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output(argument.User.Nick + " sets topic " + argument.NewTopic);
+                Tolk.Output($"{argument.User.Nick} sets topic {_tools.Strip(argument.NewTopic)}");
             }
             else
             {
-                Tolk.Output(argument.User.Nick + " sets topic " + argument.NewTopic + " on " + argument.Channel.Name);
+                Tolk.Output($"{argument.User.Nick} sets topic {_tools.Strip(argument.NewTopic)} on {argument.Channel.Name}");
             }
         }
 
@@ -867,7 +867,7 @@ namespace adispeak
             }
             else
             {
-                Tolk.Output("Connected to " + argument.Server.Name);
+                Tolk.Output($"Connected to {argument.Server.Name}");
             }
         }
 
@@ -875,11 +875,11 @@ namespace adispeak
         {
             if (argument.Server.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("Failed to connect:" + argument.Error);
+                Tolk.Output($"Failed to connect: {argument.Error}");
             }
             else
             {
-                Tolk.Output("Failed to connect to " + argument.Server.Name + ": " + argument.Error);
+                Tolk.Output($"Failed to connect to {argument.Server.Name}: {argument.Error}");
             }
         }
 
@@ -891,7 +891,7 @@ namespace adispeak
             }
             else
             {
-                Tolk.Output("Logged on to " + argument.Server.Name);
+                Tolk.Output($"Logged on to {argument.Server.Name}");
             }
         }
 
@@ -903,7 +903,7 @@ namespace adispeak
             }
             else
             {
-                Tolk.Output("disconnected from " + argument.Server.Name);
+                Tolk.Output($"disconnected from {argument.Server.Name}");
             }
         }
 
@@ -913,40 +913,40 @@ namespace adispeak
             {
                 if (argument.Command.StartsWith("/me"))
                 {
-                    Tolk.Output(argument.Server.Nick + " " + argument.Message);
+                    Tolk.Output($"{argument.Server.Nick} {_tools.Strip(argument.Message)}");
                 }
                 else
                 {
-                    Tolk.Output(argument.Server.Nick + " says " + argument.Message);
+                    Tolk.Output($"{argument.Server.Nick} says {_tools.Strip(argument.Message)}");
                 }
             }
             else
             {
                 if (argument.Command.StartsWith("/me"))
                 {
-                    Tolk.Output(argument.Server.Nick + " on " + argument.Target + " " + argument.Message);
+                    Tolk.Output($"{argument.Server.Nick} on {argument.Target} {_tools.Strip(argument.Message)}");
                 }
                 else
                 {
-                    Tolk.Output(argument.Server.Nick + " on " + argument.Target + " says " + argument.Message);
+                    Tolk.Output($"{argument.Server.Nick} on {argument.Target} says {_tools.Strip(argument.Message)}");
                 }
             }
         }
 
         private void OnNick(NickArgs argument)
         {
-            Tolk.Output(argument.User.Nick + " now known as " + argument.NewNick);
+            Tolk.Output($"{argument.User.Nick} now known as {argument.NewNick}");
         }
 
         private void OnNotifyUserOffline(NotifyUserOfflineArgs argument)
         {
             if (argument.Server.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("notify: " + argument.User.Nick + " offline");
+                Tolk.Output($"notify: {argument.User.Nick} offline");
             }
             else
             {
-                Tolk.Output("notify: " + argument.User.Nick + " offline on " + argument.Server.Name);
+                Tolk.Output($"notify: {argument.User.Nick} offline on {argument.Server.Name}");
             }
         }
 
@@ -954,48 +954,48 @@ namespace adispeak
         {
             if (argument.Server.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("notify: " + argument.User.Nick + " online at " + argument.SignedOnTime.ToLongDateString());
+                Tolk.Output($"notify: {argument.User.Nick} online at {argument.SignedOnTime.ToLongDateString()}");
             }
             else
             {
-                Tolk.Output("notify: " + argument.User.Nick + " online on " + argument.Server.Name + " at " + argument.SignedOnTime.ToLongDateString());
+                Tolk.Output($"notify: {argument.User.Nick} online on {argument.Server.Name} at {argument.SignedOnTime.ToLongDateString()}");
             }
         }
 
         private void OnPrivateActionMessage(PrivateActionMessageArgs argument)
         {
-            Tolk.Output(argument.User.Nick + "@" + argument.Server.Name + "in private message " + argument.Message);
+            Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private message {_tools.Strip(argument.Message)}");
         }
 
         private void OnPrivateCtcpMessage(PrivateCtcpMessageArgs argument)
         {
-            Tolk.Output(argument.User.Nick + "@" + argument.Server.Name + "in ctcp message says " + argument.Message);
+            Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in ctcp message says {_tools.Strip(argument.Message)}");
         }
 
         private void OnPrivateCtcpReplyMessage(PrivateCtcpReplyMessageArgs argument)
         {
-            Tolk.Output(argument.User.Nick + "@" + argument.Server.Name + "in ctcp reply says " + argument.Message);
+            Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in ctcp reply says {_tools.Strip(argument.Message)}");
         }
 
         private void OnPrivateNormalMessage(PrivateNormalMessageArgs argument)
         {
-            Tolk.Output(argument.User.Nick + "@" + argument.Server.Name + "in private message says " + argument.Message);
+            Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private message says {_tools.Strip(argument.Message)}");
         }
 
         private void OnPrivateNoticeMessage(PrivateNoticeMessageArgs argument)
         {
-            Tolk.Output(argument.User.Nick + "@" + argument.Server.Name + "in private notice says " + argument.Message);
+            Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private notice says {_tools.Strip(argument.Message)}");
         }
 
         private void OnQuit(QuitArgs argument)
         {
             if (argument.Server.Network == _host.ActiveIWindow.Server.Network)
             {
-                Tolk.Output($"{argument.User.Nick} quit: {argument.QuitMessage}");
+                Tolk.Output($"{argument.User.Nick} quit: {_tools.Strip(argument.QuitMessage)}");
             }
             else
             {
-                Tolk.Output($"{argument.User.Nick} on {argument.Server.Network} quit: {argument.QuitMessage}");
+                Tolk.Output($"{argument.User.Nick} on {argument.Server.Network} quit: {_tools.Strip(argument.QuitMessage)}");
             }
         }
 
@@ -1003,11 +1003,11 @@ namespace adispeak
         {
             if (argument.Server.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server error: " + argument.Message);
+                Tolk.Output($"server error: {argument.Message}");
             }
             else
             {
-                Tolk.Output("server error from " + argument.Server.Name + ": " + argument.Message);
+                Tolk.Output($"server error from {argument.Server.Name}: {argument.Message}");
             }
         }
 
@@ -1015,34 +1015,34 @@ namespace adispeak
         {
             if (argument.Server.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("server notice: " + argument.Message);
+                Tolk.Output($"server notice: {_tools.Strip(argument.Message)}");
             }
             else
             {
-                Tolk.Output("server notice from " + argument.Server.Name + ": " + argument.Message);
+                Tolk.Output($"server notice from {argument.Server.Name}: {_tools.Strip(argument.Message)}");
             }
         }
 
         private void OnUserInvitedToChannel(UserInvitedToChannelArgs argument)
         {
-            Tolk.Output(argument.User.Nick + " invites you to " + argument.ChannelName);
+            Tolk.Output($"{argument.User.Nick} invites you to {argument.ChannelName}");
         }
 
         private void OnUserMode(UserModeArgs argument)
         {
             if (argument.Server.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("you get " + argument.Mode);
+                Tolk.Output($"you get {argument.Mode}");
             }
             else
             {
-                Tolk.Output("you get " + argument.Mode + " on " + argument.Server.Name);
+                Tolk.Output($"you get {argument.Mode} on {argument.Server.Name}");
             }
         }
 
         private void OnWindowFocusChanged(WindowFocusArgs argument)
         {
-            Tolk.Output("entering " + argument.Window.Name);
+            Tolk.Output($"entering {argument.Window.Name}");
             if (argument.Window.TextView.ScrollbarPos > 0 && argument.Window.TextView.ScrollbarPos < argument.Window.TextView.Lines.Count)
             {
                 CurPos = argument.Window.TextView.ScrollbarPos;
