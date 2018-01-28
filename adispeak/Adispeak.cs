@@ -135,7 +135,7 @@ namespace adispeak
             _host.OnWindowFocusChanged += OnWindowFocusChanged;
             _host.OnRawServerEventReceived += OnRawServerEventReceived;
 
-            if (_host.GetVariables["global_sapi"] == "true")
+            if (_host.GetVariables["%global_sapi"] == "true")
             {
                 Tolk.PreferSAPI(true);
             }
@@ -160,14 +160,14 @@ namespace adispeak
         {
             Tolk.PreferSAPI(true);
             Tolk.Output("SAPI on.");
-            _host.GetVariables["global_sapi"] = "true";
+            _host.ActiveIWindow.ExecuteCommand(".set %global_sapi true");
         }
 
         private void SapioffCommandHandler(RegisteredCommandArgs argument)
         {
             Tolk.PreferSAPI(false);
             Tolk.Output("SAPI off.");
-            _host.GetVariables["global_sapi"] = "false";
+            _host.ActiveIWindow.ExecuteCommand(".set %global_sapi false");
         }
 
         private void ScreenreaderIdentifierHandler(RegisteredIdentifierArgs argument)
@@ -292,7 +292,7 @@ namespace adispeak
                 Tolk.Output("copied.");
             }
 
-            if (argument.KeyEventArgs.KeyCode == Keys.Control)
+            if (argument.KeyEventArgs.KeyCode == Keys.F2)
             {
                 Tolk.Speak(". ", true);
             }
@@ -987,7 +987,14 @@ namespace adispeak
 
         private void OnQuit(QuitArgs argument)
         {
-            Tolk.Output(argument.User.Nick + " quit: " + argument.QuitMessage);
+            if (argument.Server.Network == _host.ActiveIWindow.Server.Network)
+            {
+                Tolk.Output($"{argument.User.Nick} quit: {argument.QuitMessage}");
+            }
+            else
+            {
+                Tolk.Output($"{argument.User.Nick} on {argument.Server.Network} quit: {argument.QuitMessage}");
+            }
         }
 
         private void OnServerErrorMessage(ServerErrorMessageArgs argument)
