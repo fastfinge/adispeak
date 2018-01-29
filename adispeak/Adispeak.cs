@@ -15,6 +15,8 @@ using AdiIRCAPIv2.Arguments.PrivateMessages;
 using AdiIRCAPIv2.Arguments.WindowInteraction;
 using AdiIRCAPIv2.Interfaces;
 using DavyKager;
+using IniParser;
+using IniParser.Model;
 
 namespace adispeak
 {
@@ -31,7 +33,9 @@ namespace adispeak
         private int CurPos;
         private bool SayTopic;
         private bool SayTopicSetBy;
-
+        private FileIniDataParser parser;
+        private IniData config;
+        
         public void Initialize(IPluginHost host)
         {
             _host = host;
@@ -39,6 +43,9 @@ namespace adispeak
             
             Tolk.TrySAPI(true);
             Tolk.Load();
+
+           parser = new FileIniDataParser();
+            config = parser.ReadFile("speech.ini");
 
             if (!_host.HookCommand("/speak", SpeakCommandHandler))
             {
@@ -137,7 +144,7 @@ namespace adispeak
             _host.OnWindowFocusChanged += OnWindowFocusChanged;
             _host.OnRawServerEventReceived += OnRawServerEventReceived;
 
-            if (_host.GetVariables["%global_sapi"] == "true")
+            if (config["global"]["sapi"] == "true")
             {
                 Tolk.PreferSAPI(true);
             }
@@ -162,14 +169,14 @@ namespace adispeak
         {
             Tolk.PreferSAPI(true);
             Tolk.Output("SAPI on.");
-            _host.ActiveIWindow.ExecuteCommand(".set %global_sapi true");
-        }
+            config["global"]["sapi"] = "true";
+}
 
         private void SapioffCommandHandler(RegisteredCommandArgs argument)
         {
             Tolk.PreferSAPI(false);
             Tolk.Output("SAPI off.");
-            _host.ActiveIWindow.ExecuteCommand(".set %global_sapi false");
+            config["global"]["sapi"] = "false";
         }
 
         private void ScreenreaderIdentifierHandler(RegisteredIdentifierArgs argument)
@@ -1144,6 +1151,8 @@ namespace adispeak
 
         public void Dispose()
         {
+            parser.WriteFile("speech.ini", config);
+
             _host.UnHookIdentifier("screenreader");
             _host.UnHookIdentifier("speech");
             _host.UnHookIdentifier("braille");
