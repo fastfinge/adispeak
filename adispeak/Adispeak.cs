@@ -255,6 +255,7 @@ namespace adispeak
                 }
                 _host.ActiveIWindow.TextView.ScrollTo(CurPos);
                 Tolk.Output(_tools.Strip(_host.ActiveIWindow.TextView.GetLine(CurPos)));
+                _host.ActiveIWindow.Editbox.Text = "";
             }
 
             if (argument.KeyEventArgs.Alt && argument.KeyEventArgs.Shift && argument.KeyEventArgs.KeyCode == Keys.Home)
@@ -935,10 +936,17 @@ namespace adispeak
 
         private void OnNick(NickArgs argument)
         {
-            Tolk.Output($"{argument.User.Nick} now known as {argument.NewNick}");
-        }
+            if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
+            {
+                Tolk.Output($"{argument.User.Nick} now known as {argument.NewNick}");
+            }
+            else
+            {
+                Tolk.Output($"{argument.User.Nick} on {argument.Server.Name} now known as {argument.NewNick}");
+            }
+            }
 
-        private void OnNotifyUserOffline(NotifyUserOfflineArgs argument)
+            private void OnNotifyUserOffline(NotifyUserOfflineArgs argument)
         {
             if (argument.Server.Name == _host.ActiveIWindow.Name)
             {
@@ -964,17 +972,17 @@ namespace adispeak
 
         private void OnPrivateActionMessage(PrivateActionMessageArgs argument)
         {
-            Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private message {_tools.Strip(argument.Message)}");
+                Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private message {_tools.Strip(argument.Message)}");
         }
 
         private void OnPrivateCtcpMessage(PrivateCtcpMessageArgs argument)
         {
-            Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in ctcp message says {_tools.Strip(argument.Message)}");
+                Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in ctcp message says {_tools.Strip(argument.Message)}");
         }
 
         private void OnPrivateCtcpReplyMessage(PrivateCtcpReplyMessageArgs argument)
         {
-            Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in ctcp reply says {_tools.Strip(argument.Message)}");
+                Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in ctcp reply says {_tools.Strip(argument.Message)}");
         }
 
         private void OnPrivateNormalMessage(PrivateNormalMessageArgs argument)
@@ -989,13 +997,13 @@ namespace adispeak
 
         private void OnQuit(QuitArgs argument)
         {
-            if (argument.Server.Network == _host.ActiveIWindow.Server.Network)
+            if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
             {
                 Tolk.Output($"{argument.User.Nick} quit: {_tools.Strip(argument.QuitMessage)}");
             }
             else
             {
-                Tolk.Output($"{argument.User.Nick} on {argument.Server.Network} quit: {_tools.Strip(argument.QuitMessage)}");
+                Tolk.Output($"{argument.User.Nick} on {argument.Server.Name} quit: {_tools.Strip(argument.QuitMessage)}");
             }
         }
 
@@ -1055,21 +1063,82 @@ namespace adispeak
 
         private void OnRawServerEventReceived(RawServerEventReceivedArgs argument)
         {
+            if (argument.Numeric == "301") // User is away: Away message
+            {
+                string[] Param = argument.Message.Split(' ');
+                string AwayMessage = String.Join(" ", Param, 2, Param.Length - 2);
+                Tolk.Output($"{Param[1]} is away: {AwayMessage}");
+            }
+
+            if (argument.Numeric == "305" || argument.Numeric == "306") // You are now away/no longer marked as being away
+            {
+                string[] Param = argument.Message.Split(' ');
+                string Response = String.Join(" ", Param);
+                Tolk.Output(Response);
+            }
+
+            if (argument.Numeric == "307") // user is a registered nick
+            {
+                string[] Param = argument.Message.Split(' ');
+                Tolk.Output($"{Param[1]} is a registered nick. ");
+            }
+
+            if (argument.Numeric == "311" || argument.Numeric == "314") // start of /whois or /whowas
+            {
+                string[] Param = argument.Message.Split(' ');
+                string RealName = String.Join(" ", Param, 5, Param.Length - 5);
+                string IsWas = argument.Numeric == "311" ? "is" : "was";
+                Tolk.Output($"{Param[1]} {IsWas} {Param[1]}!{Param[2]}@{Param[3]} {Param[4]} {RealName}");
+            }
+
+            if (argument.Numeric == "312") // whois server list
+            {
+                string[] Param = argument.Message.Split(' ');
+                string Response = String.Join(" ", Param, 3, Param.Length - 3);
+                Tolk.Output($"{Param[1]} using {Param[2]} ({Response})");
+            }
+
+            if (argument.Numeric == "313") // is an irc operator
+            {
+                string[] Param = argument.Message.Split(' ');
+                string Response = String.Join(" ", Param, 2, Param.Length - 2);
+                Tolk.Output($"{Param[1]} {Response}");
+            }
+
+            if (argument.Numeric == "318" || argument.Numeric == "369") // end of /whois/whowas
+            {
+                string IsWas = argument.Numeric == "318" ? "whois" : "whowas";
+                Tolk.Output($"End of /{IsWas} list.");
+            }
+
+            if (argument.Numeric == "330") // logged in as
+            {
+                string[] Param = argument.Message.Split(' ');
+                Tolk.Output($"{Param[1]} is logged in as {Param[2]}.");
+            }
+
             if (SayTopic && argument.Numeric == "332")
             {
-                string[] param = argument.Message.Split(' ');
-                string topic = string.Join(" ", param, 2, param.Length - 2);
-                Tolk.Output("The topic is: " + topic + ".");
+                string[] Param = argument.Message.Split(' ');
+                string Topic = string.Join(" ", Param, 2, Param.Length - 2);
+                Tolk.Output($"The topic is: {_tools.Strip(Topic)}.");
                 SayTopic = false;
             }
+
             if (SayTopicSetBy && argument.Numeric == "333")
             {
-                string[] param = argument.Message.Split(' ');
-                string topicSetBy = param[2];
-                Int64 timeStamp = Convert.ToInt64(param[3]);
-                string topicTime = DateTimeOffset.FromUnixTimeSeconds(timeStamp).ToLocalTime().ToString("f");
-                Tolk.Output("Topic set by " + topicSetBy + " on " + topicTime + ".");
+                string[] Param = argument.Message.Split(' ');
+                string TopicSetBy = Param[2];
+                Int64 TimeStamp = Convert.ToInt64(Param[3]);
+                string TopicTime = DateTimeOffset.FromUnixTimeSeconds(TimeStamp).ToLocalTime().ToString("f");
+                Tolk.Output($"Topic set by {TopicSetBy} on {TopicTime}.");
                 SayTopicSetBy = false;
+            }
+
+            if (argument.Numeric == "671") // is a secure connection
+            {
+                string[] Param = argument.Message.Split(' ');
+                Tolk.Output($"{Param[1]} is using a secure connection.");
             }
         }
 
