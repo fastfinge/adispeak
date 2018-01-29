@@ -1063,6 +1063,60 @@ namespace adispeak
 
         private void OnRawServerEventReceived(RawServerEventReceivedArgs argument)
         {
+            if (argument.Numeric == "301") // User is away: Away message
+            {
+                string[] Param = argument.Message.Split(' ');
+                string AwayMessage = String.Join(" ", Param, 2, Param.Length - 2);
+                Tolk.Output($"{Param[1]} is away: {AwayMessage}");
+            }
+
+            if (argument.Numeric == "305" || argument.Numeric == "306") // You are now away/no longer marked as being away
+            {
+                string[] Param = argument.Message.Split(' ');
+                string Response = String.Join(" ", Param);
+                Tolk.Output(Response);
+            }
+
+            if (argument.Numeric == "307") // user is a registered nick
+            {
+                string[] Param = argument.Message.Split(' ');
+                Tolk.Output($"{Param[1]} is a registered nick. ");
+            }
+
+            if (argument.Numeric == "311" || argument.Numeric == "314") // start of /whois or /whowas
+            {
+                string[] Param = argument.Message.Split(' ');
+                string RealName = String.Join(" ", Param, 5, Param.Length - 5);
+                string IsWas = argument.Numeric == "311" ? "is" : "was";
+                Tolk.Output($"{Param[1]} {IsWas} {Param[1]}!{Param[2]}@{Param[3]} {Param[4]} {RealName}");
+            }
+
+            if (argument.Numeric == "312") // whois server list
+            {
+                string[] Param = argument.Message.Split(' ');
+                string Response = String.Join(" ", Param, 3, Param.Length - 3);
+                Tolk.Output($"{Param[1]} using {Param[2]} ({Response})");
+            }
+
+            if (argument.Numeric == "313") // is an irc operator
+            {
+                string[] Param = argument.Message.Split(' ');
+                string Response = String.Join(" ", Param, 2, Param.Length - 2);
+                Tolk.Output($"{Param[1]} {Response}");
+            }
+
+            if (argument.Numeric == "318" || argument.Numeric == "369") // end of /whois/whowas
+            {
+                string IsWas = argument.Numeric == "318" ? "whois" : "whowas";
+                Tolk.Output($"End of /{IsWas} list.");
+            }
+
+            if (argument.Numeric == "330") // logged in as
+            {
+                string[] Param = argument.Message.Split(' ');
+                Tolk.Output($"{Param[1]} is logged in as {Param[2]}.");
+            }
+
             if (SayTopic && argument.Numeric == "332")
             {
                 string[] Param = argument.Message.Split(' ');
@@ -1070,6 +1124,7 @@ namespace adispeak
                 Tolk.Output($"The topic is: {_tools.Strip(Topic)}.");
                 SayTopic = false;
             }
+
             if (SayTopicSetBy && argument.Numeric == "333")
             {
                 string[] Param = argument.Message.Split(' ');
@@ -1078,6 +1133,12 @@ namespace adispeak
                 string TopicTime = DateTimeOffset.FromUnixTimeSeconds(TimeStamp).ToLocalTime().ToString("f");
                 Tolk.Output($"Topic set by {TopicSetBy} on {TopicTime}.");
                 SayTopicSetBy = false;
+            }
+
+            if (argument.Numeric == "671") // is a secure connection
+            {
+                string[] Param = argument.Message.Split(' ');
+                Tolk.Output($"{Param[1]} is using a secure connection.");
             }
         }
 
