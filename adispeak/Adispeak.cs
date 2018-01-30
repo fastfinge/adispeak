@@ -251,6 +251,34 @@ namespace adispeak
 
         private void OnEditboxKeyUp(EditboxKeyUpArgs argument)
         {
+            if (argument.KeyEventArgs.KeyCode == Keys.F5)
+            {
+                if (config["global"]["speech"] == "true")
+                {
+                    Tolk.Output("speech disabled.");
+                    config["global"]["speech"] = "false";
+                }
+                else
+                {
+                    Tolk.Output("speech enabled.");
+                    config["global"]["speech"] = "true";
+                }
+            }
+
+            if (argument.KeyEventArgs.KeyCode == Keys.F6)
+            {
+                if (config[_host.ActiveIWindow.Name]["speech"] == "true")
+                {
+                    Tolk.Output($"speech for {_host.ActiveIWindow.Name} disabled.");
+                    config[_host.ActiveIWindow.Name]["speech"] = "false";
+                }
+                else
+                {
+                    Tolk.Output($"speech for {_host.ActiveIWindow.Name} enabled.");
+                    config[_host.ActiveIWindow.Name]["speech"] = "true";
+                }
+            }
+
             if (argument.KeyEventArgs.KeyCode == Keys.Tab)
             {
                 Tolk.Output(argument.Editbox.Text);
@@ -1209,7 +1237,7 @@ namespace adispeak
         private void OnPrivateActionMessage(PrivateActionMessageArgs argument)
             {
                 if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.User.Nick + "@" + argument.Server.Name]["speech"] == "true" && config[argument.User.Nick + "@" + argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                    && config[argument.User.Nick]["speech"] == "true" && config[argument.User.Nick][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private message {_tools.Strip(argument.Message)}");
                 }
@@ -1218,7 +1246,7 @@ namespace adispeak
         private void OnPrivateCtcpMessage(PrivateCtcpMessageArgs argument)
             {
                 if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.User.Nick + "@" + argument.Server.Name]["speech"] == "true" && config[argument.User.Nick + "@" + argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                    && config[argument.User.Nick]["speech"] == "true" && config[argument.User.Nick][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in ctcp message says {_tools.Strip(argument.Message)}");
                 }
@@ -1227,7 +1255,7 @@ namespace adispeak
         private void OnPrivateCtcpReplyMessage(PrivateCtcpReplyMessageArgs argument)
             {
                 if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.User.Nick + "@" + argument.Server.Name]["speech"] == "true" && config[argument.User.Nick + "@" + argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                    && config[argument.User.Nick]["speech"] == "true" && config[argument.User.Nick][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in ctcp reply says {_tools.Strip(argument.Message)}");
                 }
@@ -1236,7 +1264,7 @@ namespace adispeak
         private void OnPrivateNormalMessage(PrivateNormalMessageArgs argument)
             {
                 if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.User.Nick + "@" + argument.Server.Name]["speech"] == "true" && config[argument.User.Nick + "@" + argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                    && config[argument.User.Nick]["speech"] == "true" && config[argument.User.Nick][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private message says {_tools.Strip(argument.Message)}");
                 }
@@ -1245,7 +1273,7 @@ namespace adispeak
         private void OnPrivateNoticeMessage(PrivateNoticeMessageArgs argument)
             {
                 if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.User.Nick + "@" + argument.Server.Name]["speech"] == "true" && config[argument.User.Nick + "@" + argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                    && config[argument.User.Nick]["speech"] == "true" && config[argument.User.Nick][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private notice says {_tools.Strip(argument.Message)}");
                 }
@@ -1330,6 +1358,7 @@ namespace adispeak
                     }
                 }
             }
+
         private void OnWindowOpened(WindowOpenArgs argument)
         {
             if (!config.Sections.ContainsSection(argument.Window.Name))
