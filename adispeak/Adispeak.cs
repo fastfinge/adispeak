@@ -73,6 +73,11 @@ namespace adispeak
                 _host.ActiveIWindow.OutputText("Could not create the /sapioff command.");
             }
 
+            if (!_host.HookCommand("/savespeech", SavespeechCommandHandler))
+            {
+                _host.ActiveIWindow.OutputText("Could not create the /savespeech command.");
+            }
+
             _host.HookIdentifier("screenreader", ScreenreaderIdentifierHandler);
             _host.HookIdentifier("speech", SpeechIdentifierHandler);
             _host.HookIdentifier("braille", BrailleIdentifierHandler);
@@ -144,6 +149,7 @@ namespace adispeak
             _host.OnUserMode += OnUserMode;
             _host.OnWindowFocusChanged += OnWindowFocusChanged;
             _host.OnRawServerEventReceived += OnRawServerEventReceived;
+            _host.OnWindowOpened += OnWindowOpened;
 
             if (config["global"]["sapi"] == "true")
             {
@@ -178,6 +184,12 @@ namespace adispeak
             Tolk.PreferSAPI(false);
             Tolk.Output("SAPI off.");
             config["global"]["sapi"] = "false";
+        }
+
+        private void SavespeechCommandHandler(RegisteredCommandArgs argument)
+        {
+            parser.WriteFile("speech.ini", config);
+            Tolk.Output("Settings saved.");
         }
 
         private void ScreenreaderIdentifierHandler(RegisteredIdentifierArgs argument)
@@ -1318,6 +1330,15 @@ namespace adispeak
                     }
                 }
             }
+        private void OnWindowOpened(WindowOpenArgs argument)
+        {
+            if (!config.Sections.ContainsSection(argument.Window.Name))
+            {
+                config.Sections.AddSection(argument.Window.Name);
+                config[argument.Window.Name].Merge(config["global"]);
+
+            }
+        }
 
         private void OnWindowFocusChanged(WindowFocusArgs argument)
         {
@@ -1427,6 +1448,7 @@ namespace adispeak
             _host.UnHookCommand("/braille");
             _host.UnHookCommand("/sapion");
             _host.UnHookCommand("/sapioff");
+            _host.UnHookCommand("/savespeech");
 
             Tolk.Unload();
         }
