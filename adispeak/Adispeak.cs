@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -222,13 +223,17 @@ namespace adispeak
 
         private void OnChannelActionMessage(ChannelActionMessageArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.User.Nick} {_tools.Strip(argument.Message)}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.User.Nick} on {argument.Channel.Name} {_tools.Strip(argument.Message)}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.User.Nick} {_tools.Strip(argument.Message)}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.User.Nick} on {argument.Channel.Name} {_tools.Strip(argument.Message)}");
+                }
             }
         }
 
@@ -311,749 +316,1008 @@ namespace adispeak
 
         private void OnChannelCtcpMessage(ChannelCtcpMessageArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"ctcp from {argument.User.Nick}: {_tools.Strip(argument.Message)}");
-            }
-            else
-            {
-                Tolk.Output($"ctcp from {argument.User.Nick} to {argument.Channel.Name}: {_tools.Strip(argument.Message)}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"ctcp from {argument.User.Nick}: {_tools.Strip(argument.Message)}");
+                }
+                else
+                {
+                    Tolk.Output($"ctcp from {argument.User.Nick} to {argument.Channel.Name}: {_tools.Strip(argument.Message)}");
+                }
             }
         }
 
         private void OnChannelCtcpReplyMessage(ChannelCtcpReplyMessageArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"ctcp reply from {argument.User.Nick}: {_tools.Strip(argument.Message)}");
-            }
-            else
-            {
-                Tolk.Output($"ctcp reply from {argument.User.Nick} to {argument.Channel.Name}: {_tools.Strip(argument.Message)}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"ctcp reply from {argument.User.Nick}: {_tools.Strip(argument.Message)}");
+                }
+                else
+                {
+                    Tolk.Output($"ctcp reply from {argument.User.Nick} to {argument.Channel.Name}: {_tools.Strip(argument.Message)}");
+                }
             }
         }
 
         private void OnChannelInvite(ChannelInviteArgs argument)
         {
-            if (argument.ChannelName == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.User.Nick} invites you to join this channel");
-            }
-            else
-            {
-                Tolk.Output($"{argument.User.Nick} invites you to join {argument.ChannelName}");
+                if (argument.ChannelName == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.User.Nick} on {argument.Server.Name} invites you to join this channel");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.User.Nick} on {argument.Server.Name} invites you to join {argument.ChannelName}");
+                }
             }
         }
 
         private void OnChannelJoin(ChannelJoinArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                if (argument.Channel.Server.Nick == argument.User.Nick)
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
-                    Tolk.Output($"{argument.User.Nick} joins.");
-                    SayTopic = true;
-                    SayTopicSetBy = true;
+                    if (argument.Channel.Server.Nick == argument.User.Nick)
+                    {
+                        Tolk.Output($"{argument.User.Nick} joins.");
+                        SayTopic = true;
+                        SayTopicSetBy = true;
+                    }
+                    else
+                    {
+                        Tolk.Output($"{argument.User.Nick} joins.");
+                    }
                 }
                 else
                 {
-                    Tolk.Output($"{argument.User.Nick} joins.");
-                }
-            }
-            else
-            {
-                if (argument.Channel.Server.Nick == argument.User.Nick)
-                {
-                    Tolk.Output($"{argument.User.Nick} joins {argument.Channel.Name}");
-                    SayTopic = true;
-                    SayTopicSetBy = true;
-                }
-                else
-                {
-                    Tolk.Output($"{argument.User.Nick} joins {argument.Channel.Name}");
+                    if (argument.Channel.Server.Nick == argument.User.Nick)
+                    {
+                        Tolk.Output($"{argument.User.Nick} joins {argument.Channel.Name}");
+                        SayTopic = true;
+                        SayTopicSetBy = true;
+                    }
+                    else
+                    {
+                        Tolk.Output($"{argument.User.Nick} joins {argument.Channel.Name}");
+                    }
                 }
             }
         }
 
         private void OnChannelKick(ChannelKickArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.KickedUser.Nick} is kicked by {argument.ByUser.Nick}: {_tools.Strip(argument.KickReason)}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.KickedUser.Nick} is kicked from {argument.Channel.Name} by {argument.ByUser.Nick}: {_tools.Strip(argument.KickReason)}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.KickedUser.Nick} is kicked by {argument.ByUser.Nick}: {_tools.Strip(argument.KickReason)}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.KickedUser.Nick} is kicked from {argument.Channel.Name} by {argument.ByUser.Nick}: {_tools.Strip(argument.KickReason)}");
+                }
             }
         }
 
         private void OnChannelModeListBan(ChannelModeListBanArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} bans {argument.BanMask}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} bans {argument.BanMask} from {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} bans {argument.BanMask}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} bans {argument.BanMask} from {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelModeListBanExempt(ChannelModeListBanExemptArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} ban exempts {argument.BanMask}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} ban exempts {argument.BanMask} from {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} ban exempts {argument.BanMask}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} ban exempts {argument.BanMask} from {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelModeListBanUnexempt(ChannelModeListBanUnexemptArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} ban unexempts {argument.BanMask}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} ban unexempts {argument.BanMask} from {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} ban unexempts {argument.BanMask}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} ban unexempts {argument.BanMask} from {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelModeListInviteExempt(ChannelModeListInviteExemptArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} invite exempts {argument.BanMask}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} invite exempts {argument.BanMask} from {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} invite exempts {argument.BanMask}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} invite exempts {argument.BanMask} from {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelModeListInviteUnexempt(ChannelModeListInviteUnexemptArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} invite unexempts {argument.BanMask}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} invite unexempts {argument.BanMask} from {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} invite unexempts {argument.BanMask}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} invite unexempts {argument.BanMask} from {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelModeListQuiet(ChannelModeListQuietArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} quiet bans {argument.BanMask}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} quiet bans {argument.BanMask} from {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} quiet bans {argument.BanMask}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} quiet bans {argument.BanMask} from {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelModeListUnban(ChannelModeListUnbanArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} unbans {argument.BanMask}");
-            }
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                        Tolk.Output($"{argument.ByUser.Nick} unbans {argument.BanMask}");
+                    }
             else
             {
-                Tolk.Output($"{argument.ByUser.Nick} unbans {argument.BanMask} from {argument.Channel.Name}");
-            }
+                        Tolk.Output($"{argument.ByUser.Nick} unbans {argument.BanMask} from {argument.Channel.Name}");
+                    }
+                }
         }
 
         private void OnChannelModeListUnquiet(ChannelModeListUnquietArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} unquiet bans {argument.BanMask}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} unquiet bans {argument.BanMask} from {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} unquiet bans {argument.BanMask}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} unquiet bans {argument.BanMask} from {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelModeUserAdmined(ChannelModeUserAdminedArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} admins {argument.User.Nick}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} admins {argument.User.Nick} on {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} admins {argument.User.Nick}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} admins {argument.User.Nick} on {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelModeUserDeadmined(ChannelModeUserDeadminedArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} de-admins {argument.User.Nick}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} de-admins {argument.User.Nick} on {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} de-admins {argument.User.Nick}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} de-admins {argument.User.Nick} on {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelModeUserDehalfOpped(ChannelModeUserDehalfOppedArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} de-halfOpps {argument.User.Nick}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} de-halfOpps {argument.User.Nick} on {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} de-halfOpps {argument.User.Nick}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} de-halfOpps {argument.User.Nick} on {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelModeUserDeopped(ChannelModeUserDeoppedArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} de-opps {argument.User.Nick}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} de-opps {argument.User.Nick} on {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} de-opps {argument.User.Nick}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} de-opps {argument.User.Nick} on {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelModeUserDeownered(ChannelModeUserDeowneredArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} de-owners {argument.User.Nick}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} de-owners {argument.User.Nick} on {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} de-owners {argument.User.Nick}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} de-owners {argument.User.Nick} on {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelModeUserDevoiced(ChannelModeUserDevoicedArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} de-voices {argument.User.Nick}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} de-voices {argument.User.Nick} on {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} de-voices {argument.User.Nick}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} de-voices {argument.User.Nick} on {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelModeUserHalfOpped(ChannelModeUserHalfOppedArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} halfOpps {argument.User.Nick}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} halfOpps {argument.User.Nick} on {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} halfOpps {argument.User.Nick}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} halfOpps {argument.User.Nick} on {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelModeUserOpped(ChannelModeUserOppedArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} opps {argument.User.Nick}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} opps {argument.User.Nick} on {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} opps {argument.User.Nick}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} opps {argument.User.Nick} on {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelModeUserOwnered(ChannelModeUserOwneredArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} owners {argument.User.Nick}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} owners {argument.User.Nick} on {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} owners {argument.User.Nick}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} owners {argument.User.Nick} on {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelModeUserVoiced(ChannelModeUserVoicedArgs argument)
         {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
-                Tolk.Output($"{argument.ByUser.Nick} voices {argument.User.Nick}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.ByUser.Nick} voices {argument.User.Nick} on {argument.Channel.Name}");
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} voices {argument.User.Nick}");
+                }
+                else
+                {
+                    Tolk.Output($"{argument.ByUser.Nick} voices {argument.User.Nick} on {argument.Channel.Name}");
+                }
             }
         }
 
         private void OnChannelNormalMessage(ChannelNormalMessageArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"{argument.User.Nick} says {_tools.Strip(argument.Message)}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"{argument.User.Nick} says {_tools.Strip(argument.Message)}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"{argument.User.Nick} on {argument.Channel.Name} says {_tools.Strip(argument.Message)}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"{argument.User.Nick} on {argument.Channel.Name} says {_tools.Strip(argument.Message)}");
-            }
-        }
 
         private void OnChannelNoticeMessage(ChannelNoticeMessageArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"{argument.User.Nick} notice: {_tools.Strip(argument.Message)}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"{argument.User.Nick} notice: {_tools.Strip(argument.Message)}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"{argument.User.Nick} on {argument.Channel.Name} notice: {_tools.Strip(argument.Message)}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"{argument.User.Nick} on {argument.Channel.Name} notice: {_tools.Strip(argument.Message)}");
-            }
-        }
 
         private void OnChannelPart(ChannelPartArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"{argument.User.Nick} parts: {_tools.Strip(argument.PartMessage)}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"{argument.User.Nick} parts: {_tools.Strip(argument.PartMessage)}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"{argument.User.Nick} parts {argument.Channel.Name}: {_tools.Strip(argument.PartMessage)}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"{argument.User.Nick} parts {argument.Channel.Name}: {_tools.Strip(argument.PartMessage)}");
-            }
-        }
 
         private void OnChannelServerModeListBan(ChannelServerModeListBanArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server bans {argument.BanMask}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server bans {argument.BanMask}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server bans {argument.BanMask} from {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server bans {argument.BanMask} from {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeListBanExempt(ChannelServerModeListBanExemptArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server ban exempts {argument.BanMask}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server ban exempts {argument.BanMask}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server ban exempts {argument.BanMask} from {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server ban exempts {argument.BanMask} from {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeListBanUnexempt(ChannelServerModeListBanUnexemptArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server ban unexempts {argument.BanMask}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server ban unexempts {argument.BanMask}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server ban unexempts {argument.BanMask} from {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server ban unexempts {argument.BanMask} from {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeListInviteExempt(ChannelServerModeListInviteExemptArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server invite exempts {argument.BanMask}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server invite exempts {argument.BanMask}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server invite exempts {argument.BanMask} from {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server invite exempts {argument.BanMask} from {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeListInviteUnexempt(ChannelServerModeListInviteUnexemptArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server invite unexempts {argument.BanMask}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server invite unexempts {argument.BanMask}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server invite unexempts {argument.BanMask} from {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server invite unexempts {argument.BanMask} from {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeListQuiet(ChannelServerModeListQuietArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server quiet bans {argument.BanMask}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server quiet bans {argument.BanMask}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server quiet bans {argument.BanMask} from {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server quiet bans {argument.BanMask} from {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeListUnban(ChannelServerModeListUnbanArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server unbans {argument.BanMask}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server unbans {argument.BanMask}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server unbans {argument.BanMask} from {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server unbans {argument.BanMask} from {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeListUnquiet(ChannelServerModeListUnquietArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server quiet unbans {argument.BanMask}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server quiet unbans {argument.BanMask}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server quiet unbans {argument.BanMask} from {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server quiet unbans {argument.BanMask} from {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeUserAdmined(ChannelServerModeUserAdminedArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server admins {argument.User.Nick}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server admins {argument.User.Nick}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server admins {argument.User.Nick} on {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server admins {argument.User.Nick} on {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeUserDeadmined(ChannelServerModeUserDeadminedArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server de-admins {argument.User.Nick}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server de-admins {argument.User.Nick}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server de-admins {argument.User.Nick} on {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server de-admins {argument.User.Nick} on {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeUserDehalfOpped(ChannelServerModeUserDehalfOppedArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server de-halfOpps {argument.User.Nick}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server de-halfOpps {argument.User.Nick}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server de-halfOpps {argument.User.Nick} on {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server de-halfOpps {argument.User.Nick} on {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeUserDeopped(ChannelServerModeUserDeoppedArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server de-opps {argument.User.Nick}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server de-opps {argument.User.Nick}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server de-opps {argument.User.Nick} on {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server de-opps {argument.User.Nick} on {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeUserDeownered(ChannelServerModeUserDeowneredArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server de-owners {argument.User.Nick}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server de-owners {argument.User.Nick}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server de-owners {argument.User.Nick} on {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server de-owners {argument.User.Nick} on {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeUserDevoiced(ChannelServerModeUserDevoicedArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server de-voices {argument.User.Nick}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server de-voices {argument.User.Nick}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server de-voices {argument.User.Nick} on {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server de-voices {argument.User.Nick} on {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeUserHalfOpped(ChannelServerModeUserHalfOppedArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server halfOpps {argument.User.Nick}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server halfOpps {argument.User.Nick}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server halfOpps {argument.User.Nick} on {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server halfOpps {argument.User.Nick} on {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeUserOpped(ChannelServerModeUserOppedArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server opps {argument.User.Nick}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server opps {argument.User.Nick}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server opps {argument.User.Nick} on {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server opps {argument.User.Nick} on {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeUserOwnered(ChannelServerModeUserOwneredArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server owners {argument.User.Nick}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server owners {argument.User.Nick}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server owners {argument.User.Nick} on {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server owners {argument.User.Nick} on {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelServerModeUserVoiced(ChannelServerModeUserVoicedArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server voices {argument.User.Nick}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server voices {argument.User.Nick}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server voices {argument.User.Nick} on {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server voices {argument.User.Nick} on {argument.Channel.Name}");
-            }
-        }
 
         private void OnChannelTopic(ChannelTopicArgs argument)
-        {
-            if (argument.Channel.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"{argument.User.Nick} sets topic {_tools.Strip(argument.NewTopic)}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"{argument.User.Nick} sets topic {_tools.Strip(argument.NewTopic)}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"{argument.User.Nick} sets topic {_tools.Strip(argument.NewTopic)} on {argument.Channel.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"{argument.User.Nick} sets topic {_tools.Strip(argument.NewTopic)} on {argument.Channel.Name}");
-            }
-        }
 
         private void OnConnect(ConnectArgs argument)
-        {
-            if (argument.Server.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("Connected");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output("Connected");
+                    }
+                    else
+                    {
+                        Tolk.Output($"Connected to {argument.Server.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"Connected to {argument.Server.Name}");
-            }
-        }
 
         private void OnConnectFailure(ConnectFailureArgs argument)
-        {
-            if (argument.Server.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"Failed to connect: {argument.Error}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"Failed to connect: {argument.Error}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"Failed to connect to {argument.Server.Name}: {argument.Error}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"Failed to connect to {argument.Server.Name}: {argument.Error}");
-            }
-        }
 
         private void OnConnectionLogonSuccess(ConnectionLogonSuccessArgs argument)
-        {
-            if (argument.Server.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("Logged on");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output("Logged on");
+                    }
+                    else
+                    {
+                        Tolk.Output($"Logged on to {argument.Server.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"Logged on to {argument.Server.Name}");
-            }
-        }
 
         private void OnDisconnect(DisconnectArgs argument)
-        {
-            if (argument.Server.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output("disconnected");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output("disconnected");
+                    }
+                    else
+                    {
+                        Tolk.Output($"disconnected from {argument.Server.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"disconnected from {argument.Server.Name}");
-            }
-        }
 
         private void OnMessageSent(MessageSentArgs argument)
-        {
-            if (argument.Target == _host.ActiveIWindow.Name)
             {
-                if (argument.Command.StartsWith("/me"))
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Target]["speech"] == "true" && config[argument.Target][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
-                    Tolk.Output($"{argument.Server.Nick} {_tools.Strip(argument.Message)}");
-                }
-                else
-                {
-                    Tolk.Output($"{argument.Server.Nick} says {_tools.Strip(argument.Message)}");
+                    if (argument.Target == _host.ActiveIWindow.Name)
+                    {
+                        if (argument.Command.StartsWith("/me"))
+                        {
+                            Tolk.Output($"{argument.Server.Nick} {_tools.Strip(argument.Message)}");
+                        }
+                        else
+                        {
+                            Tolk.Output($"{argument.Server.Nick} says {_tools.Strip(argument.Message)}");
+                        }
+                    }
+                    else
+                    {
+                        if (argument.Command.StartsWith("/me"))
+                        {
+                            Tolk.Output($"{argument.Server.Nick} on {argument.Target} {_tools.Strip(argument.Message)}");
+                        }
+                        else
+                        {
+                            Tolk.Output($"{argument.Server.Nick} on {argument.Target} says {_tools.Strip(argument.Message)}");
+                        }
+                    }
                 }
             }
-            else
-            {
-                if (argument.Command.StartsWith("/me"))
-                {
-                    Tolk.Output($"{argument.Server.Nick} on {argument.Target} {_tools.Strip(argument.Message)}");
-                }
-                else
-                {
-                    Tolk.Output($"{argument.Server.Nick} on {argument.Target} says {_tools.Strip(argument.Message)}");
-                }
-            }
-        }
 
         private void OnNick(NickArgs argument)
-        {
-            if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
             {
-                Tolk.Output($"{argument.User.Nick} now known as {argument.NewNick}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.User.Nick} on {argument.Server.Name} now known as {argument.NewNick}");
-            }
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
+                    {
+                        Tolk.Output($"{argument.User.Nick} now known as {argument.NewNick}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"{argument.User.Nick} on {argument.Server.Name} now known as {argument.NewNick}");
+                    }
+                }
             }
 
             private void OnNotifyUserOffline(NotifyUserOfflineArgs argument)
-        {
-            if (argument.Server.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"notify: {argument.User.Nick} offline");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"notify: {argument.User.Nick} offline");
+                    }
+                    else
+                    {
+                        Tolk.Output($"notify: {argument.User.Nick} offline on {argument.Server.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"notify: {argument.User.Nick} offline on {argument.Server.Name}");
-            }
-        }
 
         private void OnNotifyUserOnline(NotifyUserOnlineArgs argument)
-        {
-            if (argument.Server.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"notify: {argument.User.Nick} online at {argument.SignedOnTime.ToLongDateString()}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"notify: {argument.User.Nick} online at {argument.SignedOnTime.ToLongDateString()}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"notify: {argument.User.Nick} online on {argument.Server.Name} at {argument.SignedOnTime.ToLongDateString()}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"notify: {argument.User.Nick} online on {argument.Server.Name} at {argument.SignedOnTime.ToLongDateString()}");
-            }
-        }
 
         private void OnPrivateActionMessage(PrivateActionMessageArgs argument)
-        {
-                Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private message {_tools.Strip(argument.Message)}");
-        }
+            {
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.User.Nick + "@" + argument.Server.Name]["speech"] == "true" && config[argument.User.Nick + "@" + argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private message {_tools.Strip(argument.Message)}");
+                }
+            }
 
         private void OnPrivateCtcpMessage(PrivateCtcpMessageArgs argument)
-        {
-                Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in ctcp message says {_tools.Strip(argument.Message)}");
-        }
+            {
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.User.Nick + "@" + argument.Server.Name]["speech"] == "true" && config[argument.User.Nick + "@" + argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in ctcp message says {_tools.Strip(argument.Message)}");
+                }
+            }
 
         private void OnPrivateCtcpReplyMessage(PrivateCtcpReplyMessageArgs argument)
-        {
-                Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in ctcp reply says {_tools.Strip(argument.Message)}");
-        }
+            {
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.User.Nick + "@" + argument.Server.Name]["speech"] == "true" && config[argument.User.Nick + "@" + argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in ctcp reply says {_tools.Strip(argument.Message)}");
+                }
+            }
 
         private void OnPrivateNormalMessage(PrivateNormalMessageArgs argument)
-        {
-            Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private message says {_tools.Strip(argument.Message)}");
-        }
+            {
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.User.Nick + "@" + argument.Server.Name]["speech"] == "true" && config[argument.User.Nick + "@" + argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private message says {_tools.Strip(argument.Message)}");
+                }
+            }
 
         private void OnPrivateNoticeMessage(PrivateNoticeMessageArgs argument)
-        {
-            Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private notice says {_tools.Strip(argument.Message)}");
-        }
+            {
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.User.Nick + "@" + argument.Server.Name]["speech"] == "true" && config[argument.User.Nick + "@" + argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private notice says {_tools.Strip(argument.Message)}");
+                }
+            }
 
-        private void OnQuit(QuitArgs argument)
+                    private void OnQuit(QuitArgs argument)
         {
-            if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
-            {
-                Tolk.Output($"{argument.User.Nick} quit: {_tools.Strip(argument.QuitMessage)}");
-            }
-            else
-            {
-                Tolk.Output($"{argument.User.Nick} on {argument.Server.Name} quit: {_tools.Strip(argument.QuitMessage)}");
-            }
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
+                    {
+                        Tolk.Output($"{argument.User.Nick} quit: {_tools.Strip(argument.QuitMessage)}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"{argument.User.Nick} on {argument.Server.Name} quit: {_tools.Strip(argument.QuitMessage)}");
+                    }
+                }
         }
 
         private void OnServerErrorMessage(ServerErrorMessageArgs argument)
-        {
-            if (argument.Server.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"server error: {argument.Message}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server error: {argument.Message}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server error from {argument.Server.Name}: {argument.Message}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server error from {argument.Server.Name}: {argument.Message}");
-            }
-        }
 
-        private void OnServerNoticeMessage(ServerNoticeMessageArgs argument)
-        {
-            if (argument.Server.Name == _host.ActiveIWindow.Name)
+                    private void OnServerNoticeMessage(ServerNoticeMessageArgs argument)
             {
-                Tolk.Output($"server notice: {_tools.Strip(argument.Message)}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"server notice: {_tools.Strip(argument.Message)}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"server notice from {argument.Server.Name}: {_tools.Strip(argument.Message)}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"server notice from {argument.Server.Name}: {_tools.Strip(argument.Message)}");
-            }
-        }
 
         private void OnUserInvitedToChannel(UserInvitedToChannelArgs argument)
         {
-            Tolk.Output($"{argument.User.Nick} invites you to {argument.ChannelName}");
-        }
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
+                    {
+                        Tolk.Output($"{argument.User.Nick} invites you to {argument.ChannelName}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"{argument.User.Nick} on {argument.Server.Name} invites you to {argument.ChannelName}");
+                    }
+                    }
+                }
 
         private void OnUserMode(UserModeArgs argument)
-        {
-            if (argument.Server.Name == _host.ActiveIWindow.Name)
             {
-                Tolk.Output($"you get {argument.Mode}");
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
+                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                {
+                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+                    {
+                        Tolk.Output($"you get {argument.Mode}");
+                    }
+                    else
+                    {
+                        Tolk.Output($"you get {argument.Mode} on {argument.Server.Name}");
+                    }
+                }
             }
-            else
-            {
-                Tolk.Output($"you get {argument.Mode} on {argument.Server.Name}");
-            }
-        }
 
         private void OnWindowFocusChanged(WindowFocusArgs argument)
         {
