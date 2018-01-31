@@ -388,8 +388,7 @@ namespace adispeak
 
         private void OnChannelInvite(ChannelInviteArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
             {
                 if (argument.ChannelName == _host.ActiveIWindow.Name)
                 {
@@ -1094,8 +1093,7 @@ namespace adispeak
 
         private void OnConnect(ConnectArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
@@ -1110,8 +1108,7 @@ namespace adispeak
 
         private void OnConnectFailure(ConnectFailureArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
@@ -1126,8 +1123,7 @@ namespace adispeak
 
         private void OnConnectionLogonSuccess(ConnectionLogonSuccessArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
@@ -1142,8 +1138,7 @@ namespace adispeak
 
         private void OnDisconnect(DisconnectArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
@@ -1188,8 +1183,7 @@ namespace adispeak
 
         private void OnNick(NickArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
                     {
@@ -1204,8 +1198,7 @@ namespace adispeak
 
             private void OnNotifyUserOffline(NotifyUserOfflineArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
@@ -1220,8 +1213,7 @@ namespace adispeak
 
         private void OnNotifyUserOnline(NotifyUserOnlineArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
@@ -1281,8 +1273,7 @@ namespace adispeak
 
                     private void OnQuit(QuitArgs argument)
         {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
                     {
@@ -1297,8 +1288,7 @@ namespace adispeak
 
         private void OnServerErrorMessage(ServerErrorMessageArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
@@ -1313,8 +1303,7 @@ namespace adispeak
 
                     private void OnServerNoticeMessage(ServerNoticeMessageArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
@@ -1329,8 +1318,7 @@ namespace adispeak
 
         private void OnUserInvitedToChannel(UserInvitedToChannelArgs argument)
         {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
                     {
@@ -1345,8 +1333,7 @@ namespace adispeak
 
         private void OnUserMode(UserModeArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Server.Name]["speech"] == "true" && config[argument.Server.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
                 {
                     if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
@@ -1361,11 +1348,11 @@ namespace adispeak
 
         private void OnWindowOpened(WindowOpenArgs argument)
         {
+            Tolk.Output($"Window opened: {argument.Window.Name}.");
             if (!config.Sections.ContainsSection(argument.Window.Name))
             {
                 config.Sections.AddSection(argument.Window.Name);
                 config[argument.Window.Name].Merge(config["global"]);
-
             }
         }
 
