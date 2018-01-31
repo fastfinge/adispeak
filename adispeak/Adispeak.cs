@@ -251,7 +251,7 @@ namespace adispeak
 
         private void OnEditboxKeyUp(EditboxKeyUpArgs argument)
         {
-            if (argument.KeyEventArgs.KeyCode == Keys.F5)
+            if (argument.KeyEventArgs.KeyCode == Keys.F4)
             {
                 if (config["global"]["speech"] == "true")
                 {
@@ -265,7 +265,7 @@ namespace adispeak
                 }
             }
 
-            if (argument.KeyEventArgs.KeyCode == Keys.F6)
+            if (argument.KeyEventArgs.KeyCode == Keys.F5)
             {
                 if (config[_host.ActiveIWindow.Name]["speech"] == "true")
                 {
