@@ -24,9 +24,9 @@ namespace adispeak
     {
         public string PluginName => "Adispeak";
         public string PluginDescription => "Makes AdiIrc speak via multiple screen readers using the tolk library.";
-        public string PluginAuthor => "fastfinge";
-        public string PluginVersion => "0.1";
-        public string PluginEmail => "samuel@interfree.ca";
+        public string PluginAuthor => "fastfinge and arfy";
+        public string PluginVersion => "0.2";
+        public string PluginEmail => "samuel@interfree.ca or arfy32@gmail.com";
         private IPluginHost _host;
         private ITools _tools;
         private int CurPos;
@@ -68,6 +68,11 @@ namespace adispeak
             if (!_host.HookCommand("/sapioff", SapioffCommandHandler))
             {
                 _host.ActiveIWindow.OutputText("Could not create the /sapioff command.");
+            }
+
+            if (!_host.HookCommand("/loadspeech", LoadspeechCommandHandler))
+            {
+                _host.ActiveIWindow.OutputText("Could not create the /loadspeech command.");
             }
 
             if (!_host.HookCommand("/savespeech", SavespeechCommandHandler))
@@ -148,7 +153,7 @@ namespace adispeak
             _host.OnRawServerEventReceived += OnRawServerEventReceived;
             _host.OnWindowOpened += OnWindowOpened;
 
-            if (config.GetGlobal("sapi"))
+            if (config.UseSapi)
             {
                 Tolk.PreferSAPI(true);
             }
@@ -173,20 +178,27 @@ namespace adispeak
         {
             Tolk.PreferSAPI(true);
             Tolk.Output("SAPI on.");
-            config.SetGlobal("sapi", true);
+            config.UseSapi = true;
 }
 
         private void SapioffCommandHandler(RegisteredCommandArgs argument)
         {
             Tolk.PreferSAPI(false);
             Tolk.Output("SAPI off.");
-            config.SetGlobal("sapi", false);
+            config.UseSapi = false;
         }
 
         private void SavespeechCommandHandler(RegisteredCommandArgs argument)
         {
             config.Write("speech.json");
             Tolk.Output("Settings saved.");
+        }
+
+        private void LoadspeechCommandHandler(RegisteredCommandArgs argument)
+        {
+            config.Read("speech.json");
+            Tolk.PreferSAPI(config.UseSapi);
+            Tolk.Output("Settings loaded.");
         }
 
         private void ScreenreaderIdentifierHandler(RegisteredIdentifierArgs argument)
@@ -342,6 +354,22 @@ namespace adispeak
             {
                 Clipboard.SetText(_tools.Strip(_host.ActiveIWindow.TextView.GetLine(CurPos)));
                 Tolk.Output("copied.");
+            }
+
+            if (argument.KeyEventArgs.KeyCode == Keys.F3)
+            {
+                if (config.UseSapi)
+                {
+                    Tolk.PreferSAPI(false);
+                    Tolk.Output("using screen reader speech.");
+                    config.UseSapi = false;
+                }
+                else
+                {
+                    Tolk.PreferSAPI(true);
+                    Tolk.Output("Using SAPI speech.");
+                    config.UseSapi = true;
+                }
             }
 
             if (argument.KeyEventArgs.KeyCode == Keys.F2)
