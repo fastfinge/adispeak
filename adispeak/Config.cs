@@ -101,25 +101,24 @@ namespace adispeak
 
         public bool GetWindow(string windowName, string setting)
         {
-            if (Settings.ContainsKey(windowName))
+            if (Settings.ContainsKey(windowName) && Settings[windowName].ContainsKey(setting))
             {
                 return Settings[windowName][setting];
             }
             else
             {
-                return true;
+                return Settings["global"][setting];
             }
         }
 
         public void SetWindow(string windowName, string setting, bool value)
         {
-            Settings[windowName][setting] = value;
+                Settings[windowName][setting] = value;
         }
 
         public void AddWindow(string windowName)
         {
-            Settings[windowName] = new Dictionary<string, bool>(Settings["global"]);
-            Settings[windowName].Remove("sapi");
+            Settings[windowName] = new Dictionary<string, bool>();
         }
 
         public bool ContainsWindow(string windowName)

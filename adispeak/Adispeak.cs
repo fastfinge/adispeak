@@ -1358,7 +1358,6 @@ namespace adispeak
 
         private void OnWindowOpened(WindowOpenArgs argument)
         {
-            Tolk.Output($"Window opened: {argument.Window.Name}.");
             if (!config.ContainsWindow(argument.Window.Name))
             {
                 config.AddWindow(argument.Window.Name);
@@ -1367,11 +1366,8 @@ namespace adispeak
 
         private void OnWindowFocusChanged(WindowFocusArgs argument)
         {
-            Tolk.Output($"entering {argument.Window.Name}");
-
             if (!config.ContainsWindow(argument.Window.Name))
             {
-                Tolk.Output($"Creating settings for {argument.Window.Name}.");
                 config.AddWindow(argument.Window.Name);
             }
 
