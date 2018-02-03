@@ -1366,6 +1366,7 @@ namespace adispeak
 
         private void OnWindowFocusChanged(WindowFocusArgs argument)
         {
+            Tolk.Output($"Entering {argument.Window.Name}.");
             if (!config.ContainsWindow(argument.Window.Name))
             {
                 config.AddWindow(argument.Window.Name);
