@@ -16,8 +16,6 @@ using AdiIRCAPIv2.Arguments.PrivateMessages;
 using AdiIRCAPIv2.Arguments.WindowInteraction;
 using AdiIRCAPIv2.Interfaces;
 using DavyKager;
-using IniParser;
-using IniParser.Model;
 
 namespace adispeak
 {
@@ -34,8 +32,7 @@ namespace adispeak
         private int CurPos;
         private bool SayTopic;
         private bool SayTopicSetBy;
-        private FileIniDataParser parser;
-        private IniData config;
+        private Config config;
         
         public void Initialize(IPluginHost host)
         {
@@ -45,8 +42,8 @@ namespace adispeak
             Tolk.TrySAPI(true);
             Tolk.Load();
 
-           parser = new FileIniDataParser();
-            config = parser.ReadFile("speech.ini");
+            config = new Config();
+            config.Read("speech.json");
 
             if (!_host.HookCommand("/speak", SpeakCommandHandler))
             {
@@ -151,7 +148,7 @@ namespace adispeak
             _host.OnRawServerEventReceived += OnRawServerEventReceived;
             _host.OnWindowOpened += OnWindowOpened;
 
-            if (config["global"]["sapi"] == "true")
+            if (config.GetGlobal("sapi"))
             {
                 Tolk.PreferSAPI(true);
             }
@@ -176,19 +173,19 @@ namespace adispeak
         {
             Tolk.PreferSAPI(true);
             Tolk.Output("SAPI on.");
-            config["global"]["sapi"] = "true";
+            config.SetGlobal("sapi", true);
 }
 
         private void SapioffCommandHandler(RegisteredCommandArgs argument)
         {
             Tolk.PreferSAPI(false);
             Tolk.Output("SAPI off.");
-            config["global"]["sapi"] = "false";
+            config.SetGlobal("sapi", false);
         }
 
         private void SavespeechCommandHandler(RegisteredCommandArgs argument)
         {
-            parser.WriteFile("speech.ini", config);
+            config.Write("speech.json");
             Tolk.Output("Settings saved.");
         }
 
@@ -235,8 +232,8 @@ namespace adispeak
 
         private void OnChannelActionMessage(ChannelActionMessageArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -253,29 +250,29 @@ namespace adispeak
         {
             if (argument.KeyEventArgs.KeyCode == Keys.F4)
             {
-                if (config["global"]["speech"] == "true")
+                if (config.GetGlobal("speech"))
                 {
                     Tolk.Output("speech disabled.");
-                    config["global"]["speech"] = "false";
+                    config.SetGlobal("speech", false);
                 }
                 else
                 {
                     Tolk.Output("speech enabled.");
-                    config["global"]["speech"] = "true";
+                    config.SetGlobal("speech", true);
                 }
             }
 
             if (argument.KeyEventArgs.KeyCode == Keys.F5)
             {
-                if (config[_host.ActiveIWindow.Name]["speech"] == "true")
+                if (config.GetWindow(_host.ActiveIWindow.Name, "speech"))
                 {
                     Tolk.Output($"speech for {_host.ActiveIWindow.Name} disabled.");
-                    config[_host.ActiveIWindow.Name]["speech"] = "false";
+                    config.SetWindow(_host.ActiveIWindow.Name, "speech", false);
                 }
                 else
                 {
                     Tolk.Output($"speech for {_host.ActiveIWindow.Name} enabled.");
-                    config[_host.ActiveIWindow.Name]["speech"] = "true";
+                    config.SetWindow(_host.ActiveIWindow.Name, "speech", true);
                 }
             }
 
@@ -356,8 +353,8 @@ namespace adispeak
 
         private void OnChannelCtcpMessage(ChannelCtcpMessageArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -372,8 +369,8 @@ namespace adispeak
 
         private void OnChannelCtcpReplyMessage(ChannelCtcpReplyMessageArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -388,7 +385,8 @@ namespace adispeak
 
         private void OnChannelInvite(ChannelInviteArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Server.Name, "speech") && config.GetWindow(argument.Server.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.ChannelName == _host.ActiveIWindow.Name)
                 {
@@ -403,8 +401,8 @@ namespace adispeak
 
         private void OnChannelJoin(ChannelJoinArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -437,8 +435,8 @@ namespace adispeak
 
         private void OnChannelKick(ChannelKickArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -453,8 +451,8 @@ namespace adispeak
 
         private void OnChannelModeListBan(ChannelModeListBanArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -469,8 +467,8 @@ namespace adispeak
 
         private void OnChannelModeListBanExempt(ChannelModeListBanExemptArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -485,8 +483,8 @@ namespace adispeak
 
         private void OnChannelModeListBanUnexempt(ChannelModeListBanUnexemptArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -501,8 +499,8 @@ namespace adispeak
 
         private void OnChannelModeListInviteExempt(ChannelModeListInviteExemptArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -517,8 +515,8 @@ namespace adispeak
 
         private void OnChannelModeListInviteUnexempt(ChannelModeListInviteUnexemptArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -533,8 +531,8 @@ namespace adispeak
 
         private void OnChannelModeListQuiet(ChannelModeListQuietArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -549,8 +547,8 @@ namespace adispeak
 
         private void OnChannelModeListUnban(ChannelModeListUnbanArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -565,8 +563,8 @@ namespace adispeak
 
         private void OnChannelModeListUnquiet(ChannelModeListUnquietArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -581,8 +579,8 @@ namespace adispeak
 
         private void OnChannelModeUserAdmined(ChannelModeUserAdminedArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -597,8 +595,8 @@ namespace adispeak
 
         private void OnChannelModeUserDeadmined(ChannelModeUserDeadminedArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -613,8 +611,8 @@ namespace adispeak
 
         private void OnChannelModeUserDehalfOpped(ChannelModeUserDehalfOppedArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -629,8 +627,8 @@ namespace adispeak
 
         private void OnChannelModeUserDeopped(ChannelModeUserDeoppedArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -645,8 +643,8 @@ namespace adispeak
 
         private void OnChannelModeUserDeownered(ChannelModeUserDeowneredArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -661,8 +659,8 @@ namespace adispeak
 
         private void OnChannelModeUserDevoiced(ChannelModeUserDevoicedArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -677,8 +675,8 @@ namespace adispeak
 
         private void OnChannelModeUserHalfOpped(ChannelModeUserHalfOppedArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -693,8 +691,8 @@ namespace adispeak
 
         private void OnChannelModeUserOpped(ChannelModeUserOppedArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -709,8 +707,8 @@ namespace adispeak
 
         private void OnChannelModeUserOwnered(ChannelModeUserOwneredArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -725,8 +723,8 @@ namespace adispeak
 
         private void OnChannelModeUserVoiced(ChannelModeUserVoicedArgs argument)
         {
-            if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
             {
                 if (argument.Channel.Name == _host.ActiveIWindow.Name)
                 {
@@ -741,10 +739,10 @@ namespace adispeak
 
         private void OnChannelNormalMessage(ChannelNormalMessageArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"{argument.User.Nick} says {_tools.Strip(argument.Message)}");
                     }
@@ -757,10 +755,10 @@ namespace adispeak
 
         private void OnChannelNoticeMessage(ChannelNoticeMessageArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"{argument.User.Nick} notice: {_tools.Strip(argument.Message)}");
                     }
@@ -773,10 +771,10 @@ namespace adispeak
 
         private void OnChannelPart(ChannelPartArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"{argument.User.Nick} parts: {_tools.Strip(argument.PartMessage)}");
                     }
@@ -789,10 +787,10 @@ namespace adispeak
 
         private void OnChannelServerModeListBan(ChannelServerModeListBanArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server bans {argument.BanMask}");
                     }
@@ -805,10 +803,10 @@ namespace adispeak
 
         private void OnChannelServerModeListBanExempt(ChannelServerModeListBanExemptArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server ban exempts {argument.BanMask}");
                     }
@@ -821,10 +819,10 @@ namespace adispeak
 
         private void OnChannelServerModeListBanUnexempt(ChannelServerModeListBanUnexemptArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server ban unexempts {argument.BanMask}");
                     }
@@ -837,10 +835,10 @@ namespace adispeak
 
         private void OnChannelServerModeListInviteExempt(ChannelServerModeListInviteExemptArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server invite exempts {argument.BanMask}");
                     }
@@ -853,10 +851,10 @@ namespace adispeak
 
         private void OnChannelServerModeListInviteUnexempt(ChannelServerModeListInviteUnexemptArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server invite unexempts {argument.BanMask}");
                     }
@@ -869,10 +867,10 @@ namespace adispeak
 
         private void OnChannelServerModeListQuiet(ChannelServerModeListQuietArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server quiet bans {argument.BanMask}");
                     }
@@ -885,10 +883,10 @@ namespace adispeak
 
         private void OnChannelServerModeListUnban(ChannelServerModeListUnbanArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server unbans {argument.BanMask}");
                     }
@@ -901,10 +899,10 @@ namespace adispeak
 
         private void OnChannelServerModeListUnquiet(ChannelServerModeListUnquietArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server quiet unbans {argument.BanMask}");
                     }
@@ -917,10 +915,10 @@ namespace adispeak
 
         private void OnChannelServerModeUserAdmined(ChannelServerModeUserAdminedArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server admins {argument.User.Nick}");
                     }
@@ -933,10 +931,10 @@ namespace adispeak
 
         private void OnChannelServerModeUserDeadmined(ChannelServerModeUserDeadminedArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server de-admins {argument.User.Nick}");
                     }
@@ -949,10 +947,10 @@ namespace adispeak
 
         private void OnChannelServerModeUserDehalfOpped(ChannelServerModeUserDehalfOppedArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server de-halfOpps {argument.User.Nick}");
                     }
@@ -965,10 +963,10 @@ namespace adispeak
 
         private void OnChannelServerModeUserDeopped(ChannelServerModeUserDeoppedArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server de-opps {argument.User.Nick}");
                     }
@@ -981,10 +979,10 @@ namespace adispeak
 
         private void OnChannelServerModeUserDeownered(ChannelServerModeUserDeowneredArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server de-owners {argument.User.Nick}");
                     }
@@ -997,10 +995,10 @@ namespace adispeak
 
         private void OnChannelServerModeUserDevoiced(ChannelServerModeUserDevoicedArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server de-voices {argument.User.Nick}");
                     }
@@ -1013,10 +1011,10 @@ namespace adispeak
 
         private void OnChannelServerModeUserHalfOpped(ChannelServerModeUserHalfOppedArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server halfOpps {argument.User.Nick}");
                     }
@@ -1029,10 +1027,10 @@ namespace adispeak
 
         private void OnChannelServerModeUserOpped(ChannelServerModeUserOppedArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server opps {argument.User.Nick}");
                     }
@@ -1045,10 +1043,10 @@ namespace adispeak
 
         private void OnChannelServerModeUserOwnered(ChannelServerModeUserOwneredArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server owners {argument.User.Nick}");
                     }
@@ -1061,10 +1059,10 @@ namespace adispeak
 
         private void OnChannelServerModeUserVoiced(ChannelServerModeUserVoicedArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server voices {argument.User.Nick}");
                     }
@@ -1077,10 +1075,10 @@ namespace adispeak
 
         private void OnChannelTopic(ChannelTopicArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Channel.Name]["speech"] == "true" && config[argument.Channel.Name][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Channel.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Channel.Name, "speech") && config.GetWindow(argument.Channel.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Channel.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"{argument.User.Nick} sets topic {_tools.Strip(argument.NewTopic)}");
                     }
@@ -1093,9 +1091,10 @@ namespace adispeak
 
         private void OnConnect(ConnectArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Server.Name, "speech") && config.GetWindow(argument.Server.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output("Connected");
                     }
@@ -1108,9 +1107,10 @@ namespace adispeak
 
         private void OnConnectFailure(ConnectFailureArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Server.Name, "speech") && config.GetWindow(argument.Server.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"Failed to connect: {argument.Error}");
                     }
@@ -1123,9 +1123,10 @@ namespace adispeak
 
         private void OnConnectionLogonSuccess(ConnectionLogonSuccessArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Server.Name, "speech") && config.GetWindow(argument.Server.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output("Logged on");
                     }
@@ -1138,9 +1139,10 @@ namespace adispeak
 
         private void OnDisconnect(DisconnectArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Server.Name, "speech") && config.GetWindow(argument.Server.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output("disconnected");
                     }
@@ -1153,10 +1155,10 @@ namespace adispeak
 
         private void OnMessageSent(MessageSentArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.Target]["speech"] == "true" && config[argument.Target][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Target == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Target, "speech") && config.GetWindow(argument.Target, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Target == _host.ActiveIWindow.Name)
                     {
                         if (argument.Command.StartsWith("/me"))
                         {
@@ -1183,9 +1185,10 @@ namespace adispeak
 
         private void OnNick(NickArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Server.Name, "speech") && config.GetWindow(argument.Server.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
                     {
                         Tolk.Output($"{argument.User.Nick} now known as {argument.NewNick}");
                     }
@@ -1198,9 +1201,10 @@ namespace adispeak
 
             private void OnNotifyUserOffline(NotifyUserOfflineArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Server.Name, "speech") && config.GetWindow(argument.Server.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"notify: {argument.User.Nick} offline");
                     }
@@ -1213,9 +1217,10 @@ namespace adispeak
 
         private void OnNotifyUserOnline(NotifyUserOnlineArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Server.Name, "speech") && config.GetWindow(argument.Server.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"notify: {argument.User.Nick} online at {argument.SignedOnTime.ToLongDateString()}");
                     }
@@ -1228,54 +1233,55 @@ namespace adispeak
 
         private void OnPrivateActionMessage(PrivateActionMessageArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.User.Nick]["speech"] == "true" && config[argument.User.Nick][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private message {_tools.Strip(argument.Message)}");
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.User.Nick, "speech") && config.GetWindow(argument.User.Nick, MethodBase.GetCurrentMethod().Name))
+            {
+                Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private message {_tools.Strip(argument.Message)}");
                 }
             }
 
         private void OnPrivateCtcpMessage(PrivateCtcpMessageArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.User.Nick]["speech"] == "true" && config[argument.User.Nick][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in ctcp message says {_tools.Strip(argument.Message)}");
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.User.Nick, "speech") && config.GetWindow(argument.User.Nick, MethodBase.GetCurrentMethod().Name))
+            {
+                Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in ctcp message says {_tools.Strip(argument.Message)}");
                 }
             }
 
         private void OnPrivateCtcpReplyMessage(PrivateCtcpReplyMessageArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.User.Nick]["speech"] == "true" && config[argument.User.Nick][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in ctcp reply says {_tools.Strip(argument.Message)}");
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.User.Nick, "speech") && config.GetWindow(argument.User.Nick, MethodBase.GetCurrentMethod().Name))
+            {
+                Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in ctcp reply says {_tools.Strip(argument.Message)}");
                 }
             }
 
         private void OnPrivateNormalMessage(PrivateNormalMessageArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.User.Nick]["speech"] == "true" && config[argument.User.Nick][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private message says {_tools.Strip(argument.Message)}");
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.User.Nick, "speech") && config.GetWindow(argument.User.Nick, MethodBase.GetCurrentMethod().Name))
+            {
+                Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private message says {_tools.Strip(argument.Message)}");
                 }
             }
 
         private void OnPrivateNoticeMessage(PrivateNoticeMessageArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true"
-                    && config[argument.User.Nick]["speech"] == "true" && config[argument.User.Nick][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private notice says {_tools.Strip(argument.Message)}");
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.User.Nick, "speech") && config.GetWindow(argument.User.Nick, MethodBase.GetCurrentMethod().Name))
+            {
+                Tolk.Output($"{argument.User.Nick}@{argument.Server.Name} in private notice says {_tools.Strip(argument.Message)}");
                 }
             }
 
                     private void OnQuit(QuitArgs argument)
         {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Server.Name, "speech") && config.GetWindow(argument.Server.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
                     {
                         Tolk.Output($"{argument.User.Nick} quit: {_tools.Strip(argument.QuitMessage)}");
                     }
@@ -1288,9 +1294,10 @@ namespace adispeak
 
         private void OnServerErrorMessage(ServerErrorMessageArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Server.Name, "speech") && config.GetWindow(argument.Server.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server error: {argument.Message}");
                     }
@@ -1303,9 +1310,10 @@ namespace adispeak
 
                     private void OnServerNoticeMessage(ServerNoticeMessageArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Server.Name, "speech") && config.GetWindow(argument.Server.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"server notice: {_tools.Strip(argument.Message)}");
                     }
@@ -1318,9 +1326,10 @@ namespace adispeak
 
         private void OnUserInvitedToChannel(UserInvitedToChannelArgs argument)
         {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Server.Name, "speech") && config.GetWindow(argument.Server.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
                     {
                         Tolk.Output($"{argument.User.Nick} invites you to {argument.ChannelName}");
                     }
@@ -1333,9 +1342,10 @@ namespace adispeak
 
         private void OnUserMode(UserModeArgs argument)
             {
-                if (config["global"]["speech"] == "true" && config["global"][MethodBase.GetCurrentMethod().Name.Substring(2, MethodBase.GetCurrentMethod().Name.Length - 2)] == "true")
-                {
-                    if (argument.Server.Name == _host.ActiveIWindow.Name)
+            if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
+                && config.GetWindow(argument.Server.Name, "speech") && config.GetWindow(argument.Server.Name, MethodBase.GetCurrentMethod().Name))
+            {
+                if (argument.Server.Name == _host.ActiveIWindow.Name)
                     {
                         Tolk.Output($"you get {argument.Mode}");
                     }
@@ -1349,16 +1359,22 @@ namespace adispeak
         private void OnWindowOpened(WindowOpenArgs argument)
         {
             Tolk.Output($"Window opened: {argument.Window.Name}.");
-            if (!config.Sections.ContainsSection(argument.Window.Name))
+            if (!config.ContainsWindow(argument.Window.Name))
             {
-                config.Sections.AddSection(argument.Window.Name);
-                config[argument.Window.Name].Merge(config["global"]);
+                config.AddWindow(argument.Window.Name);
             }
         }
 
         private void OnWindowFocusChanged(WindowFocusArgs argument)
         {
             Tolk.Output($"entering {argument.Window.Name}");
+
+            if (!config.ContainsWindow(argument.Window.Name))
+            {
+                Tolk.Output($"Creating settings for {argument.Window.Name}.");
+                config.AddWindow(argument.Window.Name);
+            }
+
             if (argument.Window.TextView.ScrollbarPos > 0 && argument.Window.TextView.ScrollbarPos < argument.Window.TextView.Lines.Count)
             {
                 CurPos = argument.Window.TextView.ScrollbarPos;
@@ -1452,7 +1468,7 @@ namespace adispeak
 
         public void Dispose()
         {
-            parser.WriteFile("speech.ini", config);
+            config.Write("speech.json");
 
             _host.UnHookIdentifier("screenreader");
             _host.UnHookIdentifier("speech");
