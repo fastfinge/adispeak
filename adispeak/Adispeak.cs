@@ -260,7 +260,7 @@ namespace adispeak
 
         private void OnEditboxKeyUp(EditboxKeyUpArgs argument)
         {
-            if (argument.KeyEventArgs.KeyCode == Keys.F4)
+            if (!argument.KeyEventArgs.Control && !argument.KeyEventArgs.Alt && argument.KeyEventArgs.KeyCode == Keys.F4)
             {
                 if (config.GetGlobal("speech"))
                 {
