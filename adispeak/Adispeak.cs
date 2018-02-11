@@ -1309,7 +1309,7 @@ namespace adispeak
             if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
                 && config.GetWindow(argument.Server.Name, "speech") && config.GetWindow(argument.Server.Name, MethodBase.GetCurrentMethod().Name))
             {
-                if (argument.Server.Name == _host.ActiveIWindow.Server.Name)
+                if (_host.ActiveIWindow.Server != null && argument.Server.Name == _host.ActiveIWindow.Server.Name)
                     {
                         Tolk.Output($"{argument.User.Nick} quit: {_tools.Strip(argument.QuitMessage)}");
                     }
@@ -1400,13 +1400,16 @@ namespace adispeak
                 config.AddWindow(argument.Window.Name);
             }
 
-            if (argument.Window.TextView.ScrollbarPos > 0 && argument.Window.TextView.ScrollbarPos < argument.Window.TextView.Lines.Count)
+            if (argument.Window.TextView != null) // Do we have a text view in this window? This should stop badness from happening if not!
             {
-                CurPos = argument.Window.TextView.ScrollbarPos;
-            }
-            else
-            {
-                CurPos = argument.Window.TextView.Lines.Count - 1;
+                if (argument.Window.TextView.ScrollbarPos > 0 && argument.Window.TextView.ScrollbarPos < argument.Window.TextView.Lines.Count)
+                {
+                    CurPos = argument.Window.TextView.ScrollbarPos;
+                }
+                else
+                {
+                    CurPos = argument.Window.TextView.Lines.Count - 1;
+                }
             }
         }
 
