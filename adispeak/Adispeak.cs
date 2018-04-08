@@ -85,7 +85,7 @@ namespace adispeak
             _host.HookIdentifier("braille", BrailleIdentifierHandler);
             _host.HookIdentifier("speaking", SpeakingIdentifierHandler);
 
-            _host.OnEditboxKeyUp += OnEditboxKeyUp;
+            _host.OnEditboxKeyDown += OnEditboxKeyDown;
             _host.OnChannelActionMessage += OnChannelActionMessage;
             _host.OnChannelCtcpMessage += OnChannelCtcpMessage;
             _host.OnChannelCtcpReplyMessage += OnChannelCtcpReplyMessage;
@@ -258,7 +258,7 @@ namespace adispeak
             }
         }
 
-        private void OnEditboxKeyUp(EditboxKeyUpArgs argument)
+        private void OnEditboxKeyDown(EditboxKeyDownArgs argument)
         {
             if (!argument.KeyEventArgs.Control && !argument.KeyEventArgs.Alt && argument.KeyEventArgs.KeyCode == Keys.F4)
             {
