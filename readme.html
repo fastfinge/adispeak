@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>AdiSpeak Readme</title>
+<style type="text/css">
+ body {
+  background-color: black;
+  color: white;
+ h1.c1 {text-align: center;
+ h2.c1 {text-align: center;
+ }
+</style>
+</head>
+<body>
+<h1 class="c1">Welcome to adispeak</h1>
+<h2 class="c1">What is Adispeak?</h2>
+<p>Adispeak is an extention of <a href="https://www.adiirc.com/download.php">AdiIRC</a>  It's aim is to make IRC fully accessible with any screenreader.  It uses the Tolk library to interface with screenreaders that are installed or sapi speech.</p>
+<br>
+<h2 class="c1">Building Adispeak from source</h2>
+<p>If you'd like to get AdiSpeak's source, you can find it <a href="https://github.com/fastfinge/adispeak">Here.</a>
+<p>If you install adispeak by downloading the official AdiIRC, Put everything in adispeak\bin\x64\release into the same folder as AdiIRC.exe once you download AdiIRC from the link above.  Run the .exe, and choose file>plugins>load and choose adispeak.dll. Press OK, and everything should start speaking!</p>
+<p>If you'd like to build AdiSpeak.dll from source, you need Visual Studio 2017 installed. Open the .sln file and it should open in Visual Studio, and press build.</p>
+<br>
+<h2 class="c1">Once AdiSpeak is running</h2>
+<p>Once you have AdiSpeak installed, either by getting the official client and adding AdiSpeak to it, or by getting one of the preconfigured releases, go to file>options, and go through each thing in the review, setting up AdiIRC how you'd like it.  Once you've done that, you should be placed back into an edit box. From here, enter the standard IRC commands that you know to connect to an IRC server.</p>
+<br>
+<h2 class="c1">Commands</h2>
+<p>The following is the list of keys that AdiSpeak supports for controlling speech and history.</p>
+<ul>
+<li>f3: Switch between SAPI speech and screenreader output. If using Sapi, to adjust rate/volume/voice, you must do it through speech settings in control panel.</li>
+<li>F4: Disable and enable speech globally.</li>
+<li>f5: Disable and enable speech for the currently focused window.</li>
+<li>F6: Enter the history window. Once here, the following commands become active.</li>
+<li>Arrow keys: move around the history buffer.</li>
+<li>Space: repeat the last thing spoken.</li>
+<li>Shift+C: Copy the currently selected line to the clipboard.</li>
+<li>Escape: Close the history buffer and return to the edit field to input text.</li></ul>
+<p>If you'd rather not open the history buffer and want to keep the messages onscreen, you can use the following commands.</p>
+<ul>
+<li>Alt+shift+up and down: Review the message history.</li>
+<li>Control+shift+C: Copy the currently selected message to the clipboard.</li></ul>
+<br>
+<h2 class="c1">Scripting</h2>
+<p>The following commands can be given to control the speech system.</p>
+<ul>
+<li>/speak <text>: Speak some text.</li>
+<li>/braille <text>: Braille some text.</li>
+<li>/sout <text>: Output text using the user's prefered method (speech or braille).</li>
+<li>/sapion: Force sapi on.</li>
+<li>/sapioff: Force screen reader.</li>
+<li>/savespeech: Save your speech settings.</li>
+<li>/loadspeech: Reload your speech settings.</li>
+<li>$screenreader: Use in any script to get the name of the active screen reader.</li>
+<li>$speech: Returns true if the user's screen reader supports speech.</li>
+<li>$braille: Returns true if the user's screen reader supports braille.</li>
+<li>$speaking: Returns true if the screen reader is currently speaking.</li></ul>
+<br>
+<h1 class="c1">Last updated on April 8, 2018 at 3:40 PM</h1>
+</body>
+</html>
