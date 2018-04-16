@@ -1,6 +1,10 @@
 # adispeak
 Solution to make AdiIRC interface with screen readers.
 
+## Latest Preconfigured Adispeak
+
+Get adispeak alpha 0.2.1 from:
+https://www.sendspace.com/pro/dl/bmw9g0
 
 ## Installing
 
