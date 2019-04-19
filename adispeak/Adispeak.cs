@@ -86,6 +86,7 @@ namespace adispeak
             _host.HookIdentifier("speaking", SpeakingIdentifierHandler);
 
             _host.OnEditboxKeyDown += OnEditboxKeyDown;
+            _host.OnEditboxKeyUp += OnEditboxKeyUp;
             _host.OnChannelActionMessage += OnChannelActionMessage;
             _host.OnChannelCtcpMessage += OnChannelCtcpMessage;
             _host.OnChannelCtcpReplyMessage += OnChannelCtcpReplyMessage;
@@ -288,13 +289,11 @@ namespace adispeak
                 }
             }
 
-            if (argument.KeyEventArgs.KeyCode == Keys.Tab)
-            {
-                Tolk.Output(argument.Editbox.Text);
-            }
 
             if (argument.KeyEventArgs.Alt && argument.KeyEventArgs.Shift && argument.KeyEventArgs.KeyCode == Keys.Up)
             {
+                argument.KeyEventArgs.SuppressKeyPress = true;
+                argument.KeyEventArgs.Handled = true;
                 CurPos = CurPos - 1;
                 if (CurPos <= 0)
                 {
@@ -308,6 +307,8 @@ namespace adispeak
 
             if (argument.KeyEventArgs.Alt && argument.KeyEventArgs.Shift && argument.KeyEventArgs.KeyCode == Keys.Down)
             {
+                argument.KeyEventArgs.SuppressKeyPress = true;
+                argument.KeyEventArgs.Handled = true;
                 CurPos = CurPos + 1;
                 if (CurPos == _host.ActiveIWindow.TextView.Lines.Count)
                 {
@@ -345,7 +346,7 @@ namespace adispeak
                 Tolk.Output(_tools.Strip(_host.ActiveIWindow.TextView.GetLine(CurPos)));
             }
 
-            if (argument.KeyEventArgs.Control && argument.KeyEventArgs.Shift && argument.KeyEventArgs.KeyCode == Keys.Space)
+                    if (argument.KeyEventArgs.Control && argument.KeyEventArgs.Shift && argument.KeyEventArgs.KeyCode == Keys.Space)
             {
                 Tolk.Output(_tools.Strip(_host.ActiveIWindow.TextView.GetLine(CurPos)));
             }
@@ -376,8 +377,16 @@ namespace adispeak
             {
                 Tolk.Silence();
             }
-
         }
+
+        private void OnEditboxKeyUp(EditboxKeyUpArgs argument)
+        {
+            if (argument.KeyEventArgs.KeyCode == Keys.Tab)
+            {
+                Tolk.Output(argument.Editbox.Text);
+            }
+        }
+
 
         private void OnChannelCtcpMessage(ChannelCtcpMessageArgs argument)
         {
