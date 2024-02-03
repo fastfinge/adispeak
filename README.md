@@ -3,7 +3,7 @@ Solution to make AdiIRC interface with screen readers.
 
 ## Latest Preconfigured Adispeak
 
-Get adispeak alpha 0.2.2 from:
+Get adispeak 0.2.2 from:
 https://www.sendspace.com/pro/dl/s43h1k
 
 ## Installing
@@ -12,4 +12,4 @@ Put everything in adispeak\bin\x64\release into the same folder as AdiIRC.exe. R
 
 ## Building
 
-Have Visual Studio 2017. Do the obvious things; the project should come with everything you need!
+Have Visual Studio 2019. Do the obvious things; the project should come with everything you need!
