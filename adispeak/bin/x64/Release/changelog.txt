@@ -72,6 +72,14 @@ If you don't want to lose all of your settings, copy plugins\adispeak.dll, AdiIR
 -- ctrl+f4 to close a window should no longer also disable speech
 -- Documentation in readme.html (thanks Mike for writing the entire thing!)
 
+alpha 0.2.2
+
+-- upgraded libraries, got github releases working
+
+alpha 0.2.3
+
+-- Fixed: servers that support IRCV3 echo-message extension no longer have all of your messages read twice by ADIIRC.
+
 KNOWN issues
 
 This section has been moved to github. Please file bugs you find here: https://github.com/fastfinge/adispeak/issues
