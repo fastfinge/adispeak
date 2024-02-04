@@ -12,4 +12,4 @@ Put everything in adispeak\bin\x64\release into the same folder as AdiIRC.exe. R
 
 ## Building
 
-Have Visual Studio 2017. Do the obvious things; the project should come with everything you need!
+Have Visual Studio 2019. Do the obvious things; the project should come with everything you need!
