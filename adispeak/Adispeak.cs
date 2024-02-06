@@ -1211,9 +1211,9 @@ namespace adispeak
             }
 
         private void OnMessageSent(MessageSentArgs argument)
-            {
+        {
             if (config.GetGlobal("speech") && config.GetGlobal(MethodBase.GetCurrentMethod().Name)
-                && config.GetWindow(argument.Target, "speech") && config.GetWindow(argument.Target, MethodBase.GetCurrentMethod().Name))
+                && config.GetWindow(argument.Target, "speech") && config.GetWindow(argument.Target, MethodBase.GetCurrentMethod().Name) && argument.Server.IRCv3Caps.Contains("echo-message") == false)
             {
                 if (argument.Target == _host.ActiveIWindow.Name)
                     {
