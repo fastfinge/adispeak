@@ -25,7 +25,7 @@ namespace adispeak
         public string PluginName => "Adispeak";
         public string PluginDescription => "Makes AdiIrc speak via multiple screen readers using the tolk library.";
         public string PluginAuthor => "fastfinge and arfy";
-        public string PluginVersion => "0.2";
+        public string PluginVersion => "0.3";
         public string PluginEmail => "samuel@interfree.ca or arfy32@gmail.com";
         private IPluginHost _host;
         private ITools _tools;
@@ -33,6 +33,9 @@ namespace adispeak
         private bool SayTopic;
         private bool SayTopicSetBy;
         private Config config;
+        private ConfigGui Gui;
+                private string oldtext;
+
         
         public void Initialize(IPluginHost host)
         {
@@ -44,7 +47,7 @@ namespace adispeak
 
             config = new Config();
             config.Read("speech.json");
-
+            
             if (!_host.HookCommand("/speak", SpeakCommandHandler))
             {
                 _host.ActiveIWindow.OutputText("Could not create the /speak command.");
@@ -78,6 +81,11 @@ namespace adispeak
             if (!_host.HookCommand("/savespeech", SavespeechCommandHandler))
             {
                 _host.ActiveIWindow.OutputText("Could not create the /savespeech command.");
+            }
+
+            if (!_host.HookCommand("/speechgui", SpeechguiCommandHandler))
+            {
+                _host.ActiveIWindow.OutputText("Could not create the /speechgui command.");
             }
 
             _host.HookIdentifier("screenreader", ScreenreaderIdentifierHandler);
@@ -202,7 +210,12 @@ namespace adispeak
             Tolk.Output("Settings loaded.");
         }
 
-        private void ScreenreaderIdentifierHandler(RegisteredIdentifierArgs argument)
+        private void SpeechguiCommandHandler(RegisteredCommandArgs argument)
+        {
+            Gui = new ConfigGui(config);
+        }
+
+            private void ScreenreaderIdentifierHandler(RegisteredIdentifierArgs argument)
         {
             argument.ReturnString = Tolk.DetectScreenReader();
         }
@@ -230,7 +243,7 @@ namespace adispeak
                 argument.ReturnString = "false";
             }
         }
-
+        
         private void SpeakingIdentifierHandler(RegisteredIdentifierArgs argument)
         {
             if (Tolk.IsSpeaking())
@@ -289,11 +302,16 @@ namespace adispeak
                 }
             }
 
+            if (argument.KeyEventArgs.KeyCode == Keys.F7)
+            {
+                Gui = new ConfigGui(config);
+            }
 
             if (argument.KeyEventArgs.Alt && argument.KeyEventArgs.Shift && argument.KeyEventArgs.KeyCode == Keys.Up)
             {
                 argument.KeyEventArgs.SuppressKeyPress = true;
                 argument.KeyEventArgs.Handled = true;
+                oldtext = _host.ActiveIWindow.Editbox.Text;
                 CurPos = CurPos - 1;
                 if (CurPos <= 0)
                 {
@@ -302,13 +320,15 @@ namespace adispeak
                 }
                 _host.ActiveIWindow.TextView.ScrollTo(CurPos);
                 Tolk.Output(_tools.Strip(_host.ActiveIWindow.TextView.GetLine(CurPos)));
-                _host.ActiveIWindow.Editbox.Text = "";
+                _host.ActiveIWindow.Editbox.Text = oldtext;
             }
 
             if (argument.KeyEventArgs.Alt && argument.KeyEventArgs.Shift && argument.KeyEventArgs.KeyCode == Keys.Down)
             {
                 argument.KeyEventArgs.SuppressKeyPress = true;
                 argument.KeyEventArgs.Handled = true;
+                oldtext = _host.ActiveIWindow.Editbox.Text;
+
                 CurPos = CurPos + 1;
                 if (CurPos == _host.ActiveIWindow.TextView.Lines.Count)
                 {
@@ -317,7 +337,7 @@ namespace adispeak
                 }
                 _host.ActiveIWindow.TextView.ScrollTo(CurPos);
                 Tolk.Output(_tools.Strip(_host.ActiveIWindow.TextView.GetLine(CurPos)));
-                _host.ActiveIWindow.Editbox.Text = "";
+                _host.ActiveIWindow.Editbox.Text = oldtext;
             }
 
             if (argument.KeyEventArgs.Alt && argument.KeyEventArgs.Shift && argument.KeyEventArgs.KeyCode == Keys.Home)

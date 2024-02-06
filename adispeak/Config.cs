@@ -8,9 +8,10 @@ using Newtonsoft.Json;
 
 namespace adispeak
 {
-    class Config
+    public class Config
     {
-        private Dictionary<string, Dictionary<string, bool>> Settings = new Dictionary<string, Dictionary<string, bool>>
+        private Dictionary<string, bool> WindowList = new Dictionary<string, bool> {};
+                private Dictionary<string, Dictionary<string, bool>> Settings = new Dictionary<string, Dictionary<string, bool>>
         {
             {"global", new Dictionary<string, bool>
             {
@@ -98,6 +99,7 @@ namespace adispeak
         {
             Settings["global"][setting] = value;
         }
+            
 
         public bool GetWindow(string windowName, string setting)
         {
@@ -111,16 +113,41 @@ namespace adispeak
             }
         }
 
+        public Dictionary <string, bool> GetWindowList()
+        {
+            foreach (var item in Settings)
+            {
+                WindowList[item.Key] = true;
+            }
+            return WindowList;
+                    }
+
         public void SetWindow(string windowName, string setting, bool value)
         {
+            if (Settings.ContainsKey(windowName))
+                {
                 Settings[windowName][setting] = value;
-        }
+            }
+            else
+            {
+                AddWindow(windowName);
+                Settings[windowName][setting] = value;
+            }
+       }
 
         public void AddWindow(string windowName)
         {
             Settings[windowName] = new Dictionary<string, bool>();
         }
 
+        public void RemoveWindow(string WindowName)
+        {
+            if (WindowName != "global")
+            {
+                Settings[WindowName] = null;
+            }
+        }
+        
         public bool ContainsWindow(string windowName)
         {
             return Settings.ContainsKey(windowName);
@@ -139,9 +166,18 @@ namespace adispeak
             }
         }
 
-            public void Write(string filename)
+        public void Write(string filename)
+        {
+
+            foreach (var item in Settings)
             {
-                JsonSerializer serializer = new JsonSerializer();
+                if (item.Key.Count() == 0)
+                {
+                    RemoveWindow(item.Key);
+                }
+            }
+                        
+        JsonSerializer serializer = new JsonSerializer();
             serializer.Formatting = Formatting.Indented;
                 using (StreamWriter sw = new StreamWriter(filename))
                 using (JsonTextWriter writer = new JsonTextWriter(sw))
