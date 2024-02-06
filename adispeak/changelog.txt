@@ -1,0 +1,85 @@
+alpha 0.1
+
+-- First release
+
+alpha 0.1.1
+
+-- Fix some hardcoded paths preventing the client from running at all
+
+Alpha 0.1.2
+
+-- add missing spaces in some messages (thanks arfy)
+
+Alpha 0.1.3
+
+-- Added an app config for those running as admin or without UAC (thanks byron)
+
+Alpha 0.1.4
+
+-- Make the changelog public
+-- added /sapion command to force use of SAPI, and /sapioff to go back to screen reader. This setting is not saved when the client is restarted. It's just a quick skeleton feature for people who want it (looking at you, Robert).
+-- announce the window name when entering a new window with control tab (thanks groundplane)
+-- get the version info out of the title bar, and remove an inaccessible icon from the menubar
+-- make messages less verbose in the currently active window (for example, don't announce "fastfinge in #blind says" when #blind is the active window. Instead just "fastfinge says")
+
+Alpha 0.1.4.1
+
+-- Whenever you use the GUI, all paths become full rather than relative. Fixed them again.
+
+Alpha 0.1.5
+
+upgrading:
+
+If you don't want to lose all of your settings, copy plugins\adispeak.dll, AdiIRC.exe, and history.mrc into your existing AdiIRC folder.
+
+changes:
+
+-- The topic of a channel is now read when you join it. (thanks arfy and Per Amundsen)
+-- Added a space in the quit message (thanks arfy)
+-- fixed your emoting with /me
+-- autocomplete now reads on tab
+-- shift+c to copy a message to the clipboard from the f6 history window now works (thanks arfy)
+-- sapion and sapioff now give feedback
+-- the options list and server list now read (thanks Per Amundsen)
+-- New way of reviewing history, without opening a new window or pressing f6: alt+shift+up arrow for previous line, alt+shift+down arrow for next line, and control+shift+c to copy current history line to clipboard. This should sync with the scrollbar for sighted users.
+
+Alpha 0.2
+
+upgrading:
+
+If you don't want to lose all of your settings, copy plugins\adispeak.dll, AdiIRCAPIv2.dll, Newtonsoft.Json.dll, Newtonsoft.Json.xml, and AdiIRC.exe into your existing AdiIRC folder.
+
+-- The person who set the topic, and the time the topic was set now read on channel join (Thanks arfy, for being the first person other than me to contribute code to adispeak!)
+-- the nick list now reads (thanks Per Amundsen)
+-- nick changes now read correctly (thanks Per Amundsen)
+-- full sourcecode is now on github (so no longer included here)
+-- fixed a terrible stupid bug in the /braille command (question: did I ever get around to telling anyone there was a /braille command? No wonder nobody tested it)
+-- history review system: control+shift+space now reads the current message (thanks to code by Arfy)
+-- history review system: last line of the window is now no longer always blank (thanks to code fixes by Arfy)
+-- history review system: reviewing history no longer puts text in the edit box (more Arfy code)
+-- color codes are now stripped from messages
+-- f2 now interrupts sapi
+-- /whois and /whowas now read (Yay arfy!)
+-- f3 toggles between sapi and speech
+-- f4 and f5 turn speech on and off globally, or per window
+
+ALPHA 0.2.1
+
+Upgrading:
+
+If you don't want to lose all of your settings, copy plugins\adispeak.dll, AdiIRCAPIv2.dll, Newtonsoft.Json.dll, Newtonsoft.Json.xml, and AdiIRC.exe into your existing AdiIRC folder.
+
+-- ctrl+f4 to close a window should no longer also disable speech
+-- Documentation in readme.html (thanks Mike for writing the entire thing!)
+
+alpha 0.2.2
+
+-- upgraded libraries, got github releases working
+
+alpha 0.2.3
+
+-- Fixed: servers that support IRCV3 echo-message extension no longer have all of your messages read twice by ADIIRC.
+
+KNOWN issues
+
+This section has been moved to github. Please file bugs you find here: https://github.com/fastfinge/adispeak/issues
