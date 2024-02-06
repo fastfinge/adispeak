@@ -15,6 +15,7 @@ namespace adispeak
         private Dictionary<string, bool> items;
         private Dictionary <string, bool> AvailableOptions = new Dictionary <string, bool>
             {
+            {"speech", true},
             {"OnChannelActionMessage", true},
             {"OnChannelCtcpMessage", true},
             {"OnChannelCtcpReplyMessage", true},
@@ -105,14 +106,15 @@ namespace adispeak
                 }
             }
             treeView.Dock = DockStyle.Fill;
+            treeView.Sort();
             Controls.Add(treeView);
             locked = false;
             okButton = new Button();
-            okButton.Text = "OK";
+            okButton.Text = "Close";
             okButton.Dock = DockStyle.Bottom;
             okButton.Click += new EventHandler(okButton_Click);
             Controls.Add(okButton);
-
+            this.CancelButton = okButton;
             this.Size = new System.Drawing.Size(300, 300);
             this.Show();
         }
