@@ -13,3 +13,7 @@ Put everything in adispeak\bin\x64\release into the same folder as AdiIRC.exe. R
 ## Building
 
 Have Visual Studio 2017. Do the obvious things; the project should come with everything you need!
+
+## Preconfigured AdiIRC defaults
+
+The preconfigured `adispeak/bin/x64/Release` package includes AdiIRC config files that connect to `irc.rblind.com` and autojoin `#main` by default. It also ships a `sounds` folder wired into `config.ini` for AdiIRC's supported sound events, using short WAV files selected from Onj.zip.
